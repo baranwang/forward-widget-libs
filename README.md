@@ -103,7 +103,7 @@ test("测试 HTTP 请求", async () => {
 });
 ```
 
-#### TMDV
+#### TMDB
 
 如果需要使用到 `Widget.tmdb` 下的方法，需要环境变量中配置 `TMDB_API_KEY`
 
