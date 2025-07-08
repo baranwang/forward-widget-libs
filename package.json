@@ -15,15 +15,18 @@
   ],
   "scripts": {
     "build": "rslib build",
-    "check": "biome check --write",
     "dev": "rslib build --watch",
-    "format": "biome format --write"
+    "version": "changeset version",
+    "postversion": "npm run build",
+    "prerelease": "npm run build",
+    "release": "changeset publish"
   },
   "dependencies": {
     "cheerio": "^1.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
+    "@changesets/cli": "^2.29.5",
     "@rslib/core": "^0.10.4",
     "@types/node": "^22.16.0",
     "typescript": "^5.8.3"
