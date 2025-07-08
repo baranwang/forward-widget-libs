@@ -25,14 +25,14 @@ pnpm add @forward-widget/libs
 
 #### TypeScript 项目
 
-在您的项目中创建一个 `.d.ts` 文件，引入类型定义：
+在你的项目中创建一个 `.d.ts` 文件，引入类型定义：
 
 ```ts
 // forward-widget-env.d.ts
 /// <reference types="@forward-widget/libs/env" />
 ```
 
-这样您就可以在 TypeScript 代码中获得完整的类型支持：
+这样你就可以在 TypeScript 代码中获得完整的类型支持：
 
 ```ts
 // 现在可以使用 Widget 相关的类型和全局变量
@@ -45,7 +45,7 @@ const metadata: WidgetMetadata = {
 
 #### JavaScript 项目
 
-对于 JavaScript 项目，您可以使用 JSDoc 来获得类型提示：
+对于 JavaScript 项目，你可以使用 JSDoc 来获得类型提示：
 
 ```js
 /**
