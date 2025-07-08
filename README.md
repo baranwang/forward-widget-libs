@@ -36,7 +36,7 @@ pnpm add @forward-widget/libs
 
 ```ts
 // 现在可以使用 Widget 相关的类型和全局变量
-const metadata: WidgetMetadata = {
+WidgetMetadata = {
   name: "My Widget",
   version: "1.0.0",
   // ... 其他配置
@@ -51,7 +51,7 @@ const metadata: WidgetMetadata = {
 /**
  * @type {import('@forward-widget/libs/env').WidgetMetadata}
  */
-const WidgetMetadata = {
+WidgetMetadata = {
   name: "My Widget",
   version: "1.0.0",
   // ... 其他配置
