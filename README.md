@@ -37,8 +37,8 @@ pnpm add @forward-widget/libs
 ```ts
 // 现在可以使用 Widget 相关的类型和全局变量
 const metadata: WidgetMetadata = {
-  name: 'My Widget',
-  version: '1.0.0',
+  name: "My Widget",
+  version: "1.0.0",
   // ... 其他配置
 };
 ```
@@ -52,8 +52,8 @@ const metadata: WidgetMetadata = {
  * @type {import('@forward-widget/libs/env').WidgetMetadata}
  */
 const WidgetMetadata = {
-  name: 'My Widget',
-  version: '1.0.0',
+  name: "My Widget",
+  version: "1.0.0",
   // ... 其他配置
 };
 ```
@@ -65,17 +65,40 @@ const WidgetMetadata = {
 以 [Rstest](http://rstest.rs/) 为例：
 
 ```ts
-import { expect, test, beforeAll } from '@rstest/core';
+import { expect, test, beforeAll } from "@rstest/core";
 
 beforeAll(async () => {
-  const { WidgetAdaptor } = await import('@forward-widget/libs/widget-adaptor');
-  rstest.stubGlobal('Widget', WidgetAdaptor);
+  const { WidgetAdaptor } = await import("@forward-widget/libs/widget-adaptor");
+  rstest.stubGlobal("Widget", WidgetAdaptor);
 });
 
-test('测试 HTTP 请求', async () => {
-  const response = await Widget.http.get('https://api.example.com/data');
+test("测试 HTTP 请求", async () => {
+  const response = await Widget.http.get("https://api.example.com/data");
   expect(response).toBeDefined();
   expect(response.status).toBe(200);
+});
+```
+
+#### TMDV
+
+如果需要使用到 `Widget.tmdb` 下的方法，需要环境变量中配置 `TMDB_API_KEY`
+
+```ini
+# .env
+TMDB_API_KEY=xxxx
+```
+
+```ts
+// rstest.config.ts
+
+import { defineConfig } from "@rstest/core";
+
+export default defineConfig({
+  testEnvironment: "node",
+  pool: {
+    type: "forks",
+    execArgv: ["--env-file=.env"], // 通过指定 env-file 加载环境变量
+  },
 });
 ```
 
