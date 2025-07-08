@@ -1,0 +1,37 @@
+{
+  "name": "@forward-widget/libs",
+  "version": "1.0.1",
+  "type": "module",
+  "exports": {
+    "./widget-adaptor": {
+      "types": "./dist/widget-adaptor.d.ts",
+      "import": "./dist/widget-adaptor.js"
+    },
+    "./env": "./dist/env.d.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "check": "biome check --write",
+    "dev": "rslib build --watch",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.0",
+    "@rslib/core": "^0.10.4",
+    "@types/node": "^22.16.0",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baranwang/forward-widget-libs.git"
+  },
+  "author": "baranwang",
+  "license": "MIT"
+}
