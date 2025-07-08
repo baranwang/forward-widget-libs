@@ -49,13 +49,27 @@ WidgetMetadata = {
 
 ```js
 /**
- * @type {import('@forward-widget/libs/env').WidgetMetadata}
+ * @type {import('@forward-widget/libs/env')}
  */
+
+
 WidgetMetadata = {
   name: "My Widget",
   version: "1.0.0",
   // ... 其他配置
 };
+
+async function loadDetail(url: string) {
+  const resp = await Widget.http.get('https://api.example.com/data')
+  /**
+   * @type {import('@forward-widget/libs/env').VideoItem}
+   */
+  const result = {
+    // ...
+  }
+  // ...
+  return result
+}
 ```
 
 ### 单元测试
