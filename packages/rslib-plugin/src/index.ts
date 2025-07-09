@@ -2,93 +2,136 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { RsbuildPlugin } from '@rsbuild/core';
 import { camelCase, upperFirst } from 'lodash-es';
-import { Node, Project, type SourceFile, SyntaxKind } from 'ts-morph';
+import { type JSDocTagStructure, Project, type SourceFile, StructureKind, SyntaxKind } from 'ts-morph';
 
 /**
- * 处理单个入口点配置，提取所有入口路径
+ * 大驼峰命名转换
  */
-function extractEntriesFromConfig(entryConfig: unknown): string[] {
-  const entries: string[] = [];
+const toPascalCase = (str: string) => upperFirst(camelCase(str));
 
-  if (typeof entryConfig === 'string') {
-    entries.push(entryConfig);
-  } else if (Array.isArray(entryConfig)) {
-    entries.push(...entryConfig.filter((entry) => typeof entry === 'string'));
-  } else if (entryConfig && typeof entryConfig === 'object') {
-    const entryObj = entryConfig as { import?: string | string[] };
+/**
+ * 安全地解析 WidgetMetadata 对象
+ */
+function safeParseWidgetMetadata(content: string): WidgetMetadata | null {
+  try {
+    // 创建安全的执行环境
+    const sandbox = { WidgetMetadata: null as WidgetMetadata | null };
+    const func = new Function(
+      'sandbox',
+      `
+      let WidgetMetadata;
+      ${content};
+      sandbox.WidgetMetadata = WidgetMetadata;
+    `,
+    );
 
-    if (entryObj.import) {
-      if (typeof entryObj.import === 'string') {
-        entries.push(entryObj.import);
-      } else if (Array.isArray(entryObj.import)) {
-        entries.push(
-          ...entryObj.import.filter((entry) => typeof entry === 'string'),
-        );
-      }
+    func(sandbox);
+
+    if (!sandbox.WidgetMetadata) {
+      return null;
     }
-  }
 
-  return entries;
+    return sandbox.WidgetMetadata;
+  } catch (error) {
+    console.error('[plugin-forward-widget] 解析 WidgetMetadata 失败，跳过类型生成', error);
+    return null;
+  }
 }
 
-function generateFunctionTypesFactory(rootPath: string) {
-  const typesDir = path.resolve(rootPath, '.fw-types');
-  if (!fs.existsSync(typesDir)) {
-    fs.mkdirSync(typesDir, { recursive: true });
-  }
-
+/**
+ * 生成函数类型工厂函数
+ */
+function generateFunctionTypesFactory(sourceFile: SourceFile) {
   return async (entry: string) => {
     const content = await fs.promises.readFile(entry, 'utf-8');
-    const widgetMetadataObject: WidgetMetadata = new Function(
-      `let WidgetMetadata; ${content}; return WidgetMetadata;`,
-    )();
+    const widgetMetadataObject = safeParseWidgetMetadata(content);
     if (!widgetMetadataObject) {
       return;
     }
-    const project = new Project();
-    const entryPath = path.relative(rootPath, entry);
-    const fileName = entryPath.replace(/\//g, '+').replace(/\.[^.]+$/, '');
-    const filePath = path.resolve(typesDir, `${fileName}.d.ts`);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-    const sourceFile = project.createSourceFile(filePath, '');
 
     for (const module of widgetMetadataObject.modules) {
       const { functionName } = module;
-      const functionParamsTypeName = upperFirst(
-        camelCase(`${functionName}Params`),
-      );
+      const functionParamsTypeName = toPascalCase(`${functionName}Params`);
       sourceFile.addInterface({
         name: functionParamsTypeName,
-        isExported: true,
-        docs: [module.title, module.description || ''].filter(Boolean),
+        docs: [
+          {
+            kind: StructureKind.JSDoc,
+            description: `Params of ${module.title}`,
+          },
+        ],
         properties: module.params?.map((param) => {
           const type = (() => {
             switch (param.type) {
               case 'enumeration':
-                return (
-                  param.enumOptions
-                    ?.map((option) => `'${option.value}'`)
-                    .join(' | ') || 'string'
-                );
+                return param.enumOptions?.map((option) => `'${option.value}'`).join(' | ') || 'string';
               case 'constant':
-                return `'${param.value}'`;
+                return param.value ? `'${param.value}'` : 'undefined';
               default:
                 return 'string';
             }
           })();
           return {
             name: param.name,
-            docs: [param.title, param.description || ''].filter(Boolean),
+            docs: [
+              {
+                kind: StructureKind.JSDoc,
+                description: param.title,
+                tags: (() => {
+                  const tags: JSDocTagStructure[] = [];
+                  if (param.description) {
+                    tags.push({
+                      kind: StructureKind.JSDocTag,
+                      tagName: 'description',
+                      text: param.description,
+                    });
+                  }
+                  if (param.value) {
+                    tags.push({
+                      kind: StructureKind.JSDocTag,
+                      tagName: 'default',
+                      text: `'${param.value}'`,
+                    });
+                  }
+                  return tags;
+                })(),
+              },
+            ],
             type,
           };
         }),
       });
       sourceFile.addFunction({
         name: functionName,
-        isExported: true,
-        docs: [module.title, module.description || ''].filter(Boolean),
+        docs: [
+          {
+            kind: StructureKind.JSDoc,
+            description: module.title,
+            tags: (() => {
+              const tags: JSDocTagStructure[] = [];
+              if (module.description) {
+                tags.push({
+                  kind: StructureKind.JSDocTag,
+                  tagName: 'description',
+                  text: module.description,
+                });
+              }
+              tags.push(
+                {
+                  kind: StructureKind.JSDocTag,
+                  tagName: 'param',
+                  text: `{${functionParamsTypeName}} params`,
+                },
+                {
+                  kind: StructureKind.JSDocTag,
+                  tagName: 'returns',
+                  text: '{Promise<VideoItem[]>}',
+                },
+              );
+              return tags;
+            })(),
+          },
+        ],
         parameters: [
           {
             name: 'params',
@@ -97,28 +140,79 @@ function generateFunctionTypesFactory(rootPath: string) {
         ],
         returnType: 'Promise<VideoItem[]>',
       });
+      sourceFile.addTypeAlias({
+        name: toPascalCase(`${functionName}Type`),
+        docs: [module.title],
+        type: `typeof ${functionName}`,
+      });
     }
-    sourceFile.save();
   };
 }
 
-export const pluginForwardWidget = (): RsbuildPlugin => ({
+/**
+ * 清除导出声明
+ * @description Forward Widget 不支持脚本有导出声明
+ */
+function clearExportDeclaration(distPath: string) {
+  const project = new Project();
+  const sourceFile = project.addSourceFileAtPath(distPath);
+  sourceFile.getStatements().forEach((statement) => {
+    if (statement.getKind() === SyntaxKind.ExportDeclaration) {
+      statement.remove();
+    }
+  });
+  return sourceFile.save();
+}
+
+interface ForwardWidgetPluginOptions {
+  /**
+   * 生成的 dts 文件路径
+   * @default `src/forward-widget-env.d.ts`
+   */
+  typesFilePath?: string;
+}
+
+export const pluginForwardWidget = ({
+  typesFilePath = 'src/forward-widget-env.d.ts',
+}: ForwardWidgetPluginOptions = {}): RsbuildPlugin => ({
   name: 'plugin-forward-widget',
 
   setup(api) {
-    const generateFunctionTypes = generateFunctionTypesFactory(
-      api.context.rootPath,
-    );
+    const dtsPath = path.resolve(api.context.rootPath, typesFilePath);
+    api.transform({ test: '/\.ts$/' }, ({ code, addDependency }) => {
+      addDependency(dtsPath);
+      return code;
+    });
 
-    api.onBeforeBuild(({ environments }) => {
-      const allEntries = new Set<string>();
-      for (const environment of Object.values(environments)) {
-        for (const entryConfig of Object.values(environment.entry)) {
-          const entries = extractEntriesFromConfig(entryConfig);
-          entries.forEach((entry) => allEntries.add(entry));
-        }
+    const dtsProject = new Project();
+
+    api.onAfterBuild(async ({ stats }) => {
+      const buildStats = stats?.toJson(true);
+      const outputDir = buildStats?.outputPath || api.context.distPath;
+      const outputFiles = buildStats?.assets?.map((asset) => path.resolve(outputDir, asset.name));
+
+      if (!outputFiles?.length) {
+        return;
       }
-      Array.from(allEntries).forEach(generateFunctionTypes);
+
+      let typeDefFile: SourceFile;
+      if (fs.existsSync(dtsPath)) {
+        typeDefFile = dtsProject.addSourceFileAtPath(dtsPath);
+        typeDefFile.removeStatements([0, typeDefFile.getStatements().length]);
+      } else {
+        typeDefFile = dtsProject.createSourceFile(dtsPath, '');
+      }
+
+      typeDefFile.insertText(0, `/// <reference types='@forward-widget/libs/env' />\n\n`);
+
+      const generateWidgetTypes = generateFunctionTypesFactory(typeDefFile);
+
+      for (const outputFile of outputFiles) {
+        await clearExportDeclaration(outputFile);
+        await generateWidgetTypes(outputFile);
+      }
+
+      await typeDefFile.save();
     });
   },
 });

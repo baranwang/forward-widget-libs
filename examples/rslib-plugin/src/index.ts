@@ -6,6 +6,7 @@ WidgetMetadata = {
       id: 'test-module',
       title: 'Test Module',
       functionName: 'testFunction',
+      description: 'Test Module Description',
       params: [
         {
           name: 'foo',
@@ -25,11 +26,31 @@ WidgetMetadata = {
               title: 'Option 2',
               value: 'option2',
             },
+            {
+              title: 'Option 3',
+              value: 'option3',
+            },
           ],
         },
+        {
+          name: 'baz',
+          title: 'Baz',
+          description: 'Baz Description',
+          type: 'constant',
+          value: 'test-value',
+        },
       ],
+    },
+    {
+      id: 'test-module-2',
+      title: 'Test Module 2',
+      functionName: 'testFunction2',
+      description: 'Test Module 2 Description',
+      params: [],
     },
   ],
 };
 
-// export const testFunction = (params) => {}
+export function testFunction(params: TestFunctionParams) {
+  console.log(params);
+}
