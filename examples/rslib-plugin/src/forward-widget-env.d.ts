@@ -1,4 +1,6 @@
 /// <reference types='@forward-widget/libs/env' />
+
+//#region test-module
 /** Params of Test Module */
 interface TestFunctionParams {
     /** Foo */
@@ -23,7 +25,9 @@ function testFunction(params: TestFunctionParams): Promise<VideoItem[]>;
 
 /** Test Module */
 type TestFunctionType = typeof testFunction;
+//#endregion test-module
 
+//#region test-module-2
 /** Params of Test Module 2 */
 interface TestFunction2Params {
 }
@@ -38,3 +42,4 @@ function testFunction2(params: TestFunction2Params): Promise<VideoItem[]>;
 
 /** Test Module 2 */
 type TestFunction2Type = typeof testFunction2;
+//#endregion test-module-2

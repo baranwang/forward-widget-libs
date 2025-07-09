@@ -50,17 +50,20 @@ function generateFunctionTypesFactory(sourceFile: SourceFile) {
     }
 
     for (const module of widgetMetadataObject.modules) {
-      const { functionName } = module;
+      const { id, title, description, functionName, params } = module;
+      // 添加注释
+      sourceFile.addStatements(`\n//#region ${id}`);
+
       const functionParamsTypeName = toPascalCase(`${functionName}Params`);
       sourceFile.addInterface({
         name: functionParamsTypeName,
         docs: [
           {
             kind: StructureKind.JSDoc,
-            description: `Params of ${module.title}`,
+            description: `Params of ${title}`,
           },
         ],
-        properties: module.params?.map((param) => {
+        properties: params?.map((param) => {
           const type = (() => {
             switch (param.type) {
               case 'enumeration':
@@ -106,14 +109,14 @@ function generateFunctionTypesFactory(sourceFile: SourceFile) {
         docs: [
           {
             kind: StructureKind.JSDoc,
-            description: module.title,
+            description: title,
             tags: (() => {
               const tags: JSDocTagStructure[] = [];
-              if (module.description) {
+              if (description) {
                 tags.push({
                   kind: StructureKind.JSDocTag,
                   tagName: 'description',
-                  text: module.description,
+                  text: description,
                 });
               }
               tags.push(
@@ -142,9 +145,11 @@ function generateFunctionTypesFactory(sourceFile: SourceFile) {
       });
       sourceFile.addTypeAlias({
         name: toPascalCase(`${functionName}Type`),
-        docs: [module.title],
+        docs: [title],
         type: `typeof ${functionName}`,
       });
+
+      sourceFile.addStatements(`//#endregion ${id}`);
     }
   };
 }
@@ -198,7 +203,7 @@ export const pluginForwardWidget = ({
       let typeDefFile: SourceFile;
       if (fs.existsSync(dtsPath)) {
         typeDefFile = dtsProject.addSourceFileAtPath(dtsPath);
-        typeDefFile.removeStatements([0, typeDefFile.getStatements().length]);
+        typeDefFile.removeStatements([0, typeDefFile.getStatementsWithComments().length]);
       } else {
         typeDefFile = dtsProject.createSourceFile(dtsPath, '');
       }
