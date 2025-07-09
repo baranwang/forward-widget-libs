@@ -1,0 +1,39 @@
+{
+  "name": "@forward-widget/libs",
+  "version": "1.0.3",
+  "type": "module",
+  "exports": {
+    "./widget-adaptor": {
+      "types": "./dist/widget-adaptor.d.ts",
+      "import": "./dist/widget-adaptor.js"
+    },
+    "./env": "./dist/env/index.d.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "version": "changeset version",
+    "postversion": "npm run build",
+    "prerelease": "npm run build",
+    "release": "changeset publish"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.0"
+  },
+  "devDependencies": {
+    "@rslib/core": "^0.10.5",
+    "@types/node": "^22.16.0",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baranwang/forward-widget-libs.git",
+    "directory": "packages/libs"
+  },
+  "author": "baranwang",
+  "license": "MIT"
+}
