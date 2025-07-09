@@ -1,7 +1,0 @@
-
-> @examples/rslib-plugin@0.0.0 build /Users/bytedance/Documents/self/forward-widget-libs/examples/rslib-plugin
-> rslib build "--watch"
-
-sh: rslib: command not found
-[41m[30m ELIFECYCLE [39m[49m [31mCommand failed.[39m
-[43m[30m WARN [39m[49m  Local package.json exists, but node_modules missing, did you mean to install?
