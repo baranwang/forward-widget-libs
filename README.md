@@ -1,135 +1,57 @@
-# @forward-widget/libs
+# Forward Widget Libs
 
-[![NPM Version](https://img.shields.io/npm/v/@forward-widget/libs)](https://www.npmjs.com/package/@forward-widget/libs)
-![NPM License](https://img.shields.io/npm/l/@forward-widget/libs)
-
-> Forward Widget 开发工具库
+> Forward Widget 开发工具链 - 完整的开发、构建和测试解决方案
 
 ## 🚀 简介
 
-`@forward-widget/libs` 是一个专为 Forward Widget 开发者设计的工具库，提供了完整的类型定义和测试工具，帮助开发者更高效地构建和测试 Widget 应用。
+Forward Widget Libs 是一个专为 Forward Widget 开发者设计的 monorepo 项目，提供了完整的开发工具链，包括：
 
-## 📦 安装
+- 🛠️ **开发工具库** - 完整的类型定义和测试工具
+- 📦 **脚手架工具** - 快速创建项目的命令行工具
+- 🔧 **构建插件** - 优化的构建配置和插件
+- 📖 **示例项目** - 最佳实践和使用示例
+
+## 📦 包列表
+
+### 核心包
+
+| 包名                                                        | 版本                                                                                                                                    | 描述                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| [`@forward-widget/libs`](./packages/libs)                   | [![NPM Version](https://img.shields.io/npm/v/@forward-widget/libs)](https://www.npmjs.com/package/@forward-widget/libs)                 | 核心开发工具库，提供类型定义和测试工具   |
+| [`@forward-widget/rslib-plugin`](./packages/rslib-plugin)   | [![NPM Version](https://img.shields.io/npm/v/@forward-widget/rslib-plugin)](https://www.npmjs.com/package/@forward-widget/rslib-plugin) | Rslib 构建插件，优化 Widget 项目构建     |
+| [`create-forward-widget`](./packages/create-forward-widget) | [![NPM Version](https://img.shields.io/npm/v/create-forward-widget)](https://www.npmjs.com/package/create-forward-widget)               | 脚手架工具，快速创建 Forward Widget 项目 |
+
+### 示例项目
+
+| 项目                                               | 描述               |
+| -------------------------------------------------- | ------------------ |
+| [`examples/rslib-plugin`](./examples/rslib-plugin) | Rslib 插件使用示例 |
+
+## 🚀 快速开始
+
+### 创建新的 Forward Widget 项目
 
 ```bash
-npm install @forward-widget/libs
+# 使用脚手架创建新项目
+npm create forward-widget@latest
 # 或
-yarn add @forward-widget/libs
+yarn create forward-widget
 # 或
-pnpm add @forward-widget/libs
+pnpm create forward-widget@latest
 ```
 
-## 🛠️ 使用方法
+### 在现有的 Rslib 项目中使用
 
-### 环境类型定义
-
-#### TypeScript 项目
-
-在你的项目中创建一个 `.d.ts` 文件，引入类型定义：
-
-```ts
-// forward-widget-env.d.ts
-/// <reference types="@forward-widget/libs/env" />
+```bash
+npm install -D @forward-widget/libs @forward-widget/rslib-plugin
+# 或
+yarn add -D @forward-widget/libs @forward-widget/rslib-plugin
+# 或
+pnpm add -D @forward-widget/libs @forward-widget/rslib-plugin
 ```
 
-这样你就可以在 TypeScript 代码中获得完整的类型支持：
+## 📚 文档
 
-```ts
-// 现在可以使用 Widget 相关的类型和全局变量
-WidgetMetadata = {
-  name: "My Widget",
-  version: "1.0.0",
-  // ... 其他配置
-};
-
-async function loadDetail(url: string) {
-  const resp = await Widget.http.get('https://api.example.com/data')
-
-  const result: VideoItem = {
-    // ...
-  }
-  // ...
-  return result
-}
-```
-
-#### JavaScript 项目
-
-对于 JavaScript 项目，你可以使用 JSDoc 来获得类型提示：
-
-```js
-/**
- * @type {import('@forward-widget/libs/env')}
- */
-
-
-WidgetMetadata = {
-  name: "My Widget",
-  version: "1.0.0",
-  // ... 其他配置
-};
-
-async function loadDetail(url) {
-  const resp = await Widget.http.get('https://api.example.com/data')
-  /**
-   * @type {import('@forward-widget/libs/env').VideoItem}
-   */
-  const result = {
-    // ...
-  }
-  // ...
-  return result
-}
-```
-
-### 单元测试
-
-`@forward-widget/libs` 提供了 `WidgetAdaptor` 来模拟 Widget 运行环境，方便进行单元测试。
-
-以 [Rstest](http://rstest.rs/) 为例：
-
-```ts
-import { expect, test, beforeAll } from "@rstest/core";
-
-beforeAll(async () => {
-  const { WidgetAdaptor } = await import("@forward-widget/libs/widget-adaptor");
-  rstest.stubGlobal("Widget", WidgetAdaptor);
-});
-
-test("测试 HTTP 请求", async () => {
-  const response = await Widget.http.get("https://api.example.com/data");
-  expect(response).toBeDefined();
-  expect(response.status).toBe(200);
-});
-```
-
-#### TMDB
-
-如果需要使用到 `Widget.tmdb` 下的方法，需要环境变量中配置 `TMDB_API_KEY`
-
-```ini
-# .env
-TMDB_API_KEY=xxxx
-```
-
-```ts
-// rstest.config.ts
-
-import { defineConfig } from "@rstest/core";
-
-export default defineConfig({
-  testEnvironment: "node",
-  pool: {
-    type: "forks",
-    execArgv: ["--env-file=.env"], // 通过指定 env-file 加载环境变量
-  },
-});
-```
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request 来改善这个项目。
-
-## 📄 许可证
-
-MIT License
+- [**@forward-widget/libs**](./packages/libs/README.md) - 核心工具库使用指南
+- [**@forward-widget/rslib-plugin**](./packages/rslib-plugin/README.md) - 构建插件配置指南
+- [**create-forward-widget**](./packages/create-forward-widget/README.md) - 脚手架工具使用指南
