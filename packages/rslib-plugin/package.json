@@ -28,5 +28,12 @@
   "dependencies": {
     "lodash-es": "^4.17.21",
     "ts-morph": "^26.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baranwang/forward-widget-libs.git",
+    "directory": "packages/rslib-plugin"
+  },
+  "author": "baranwang",
+  "license": "MIT"
 }
