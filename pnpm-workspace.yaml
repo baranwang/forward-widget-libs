@@ -1,0 +1,5 @@
+packages:
+  - "packages/libs"
+  - "packages/rslib-plugin"
+  - "packages/create-forward-widget"
+  - "examples/*"

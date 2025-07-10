@@ -8,5 +8,7 @@ node_modules
 dist/
 storybook-static
 
-# Nx
-.nx
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea

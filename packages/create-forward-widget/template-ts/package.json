@@ -1,0 +1,8 @@
+{
+  "name": "forward-widget-template-ts",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@types/node": "^22.16.0",
+    "typescript": "^5.8.3"
+  }
+}

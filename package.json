@@ -1,41 +1,19 @@
 {
-  "name": "@forward-widget/libs",
-  "version": "1.0.3",
-  "type": "module",
-  "exports": {
-    "./widget-adaptor": {
-      "types": "./dist/widget-adaptor.d.ts",
-      "import": "./dist/widget-adaptor.js"
-    },
-    "./env": "./dist/env.d.ts",
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "rslib build",
-    "dev": "rslib build --watch",
-    "version": "changeset version",
-    "postversion": "npm run build",
-    "prerelease": "npm run build",
-    "release": "changeset publish"
-  },
-  "dependencies": {
-    "cheerio": "^1.1.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.0.0",
-    "@changesets/cli": "^2.29.5",
-    "@rslib/core": "^0.10.4",
-    "@types/node": "^22.16.0",
-    "typescript": "^5.8.3"
-  },
-  "packageManager": "pnpm@10.9.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/baranwang/forward-widget-libs.git"
-  },
-  "author": "baranwang",
-  "license": "MIT"
+	"name": "forward-widget-libs",
+	"private": true,
+	"scripts": {
+		"build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10",
+		"watch": "pnpm build --watch",
+		"version": "changeset version",
+		"postversion": "npm run build",
+		"prerelease": "npm run build",
+		"release": "changeset publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.1.1",
+		"@changesets/cli": "^2.29.5",
+		"cross-env": "^7.0.3",
+		"nx": "^21.2.2"
+	},
+	"packageManager": "pnpm@10.9.0"
 }
