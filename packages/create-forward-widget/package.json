@@ -9,7 +9,11 @@
     }
   },
   "types": "./dist/index.d.ts",
+  "bin": {
+    "create-forward-widget": "./dist/index.js"
+  },
   "files": [
+    "template-*",
     "dist"
   ],
   "scripts": {
@@ -28,5 +32,12 @@
     "@types/node": "^22.16.0",
     "type-fest": "^4.41.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baranwang/forward-widget-libs.git",
+    "directory": "packages/create-forward-widget"
+  },
+  "author": "baranwang",
+  "license": "MIT"
 }
