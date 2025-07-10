@@ -39,15 +39,7 @@ const tsToZodPlugin = (): RsbuildPlugin => {
           keepComments: true,
         });
         const result = getZodSchemasFile('');
-        console.log(result);
-        const zodSourceFile = project.createSourceFile('zod.ts', result);
-        zodSourceFile.getImportDeclarations().forEach((importDeclaration) => {
-          if (importDeclaration.getModuleSpecifier().getText() === 'zod') {
-            importDeclaration.setModuleSpecifier('zod/v4');
-          }
-        });
-        const zodSourceText = zodSourceFile.getText();
-        const source = new sources.RawSource(zodSourceText);
+        const source = new sources.RawSource(result);
         compilation.emitAsset('env.zod/index.ts', source);
       });
     },
