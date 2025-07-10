@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  zod: 4.0.2
+
 importers:
 
   .:
@@ -94,6 +97,9 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      zod:
+        specifier: 4.0.2
+        version: 4.0.2
 
   packages/rslib-plugin:
     dependencies:
@@ -123,7 +129,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
       zod:
-        specifier: ^4.0.2
+        specifier: 4.0.2
         version: 4.0.2
 
 packages:
@@ -1586,9 +1592,6 @@ packages:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
   zod@4.0.2:
     resolution: {integrity: sha512-X2niJNY54MGam4L6Kj0AxeedeDIi/E5QFW0On2faSX5J4/pfLk1tW+cRMIMoojnCavn/u5W/kX17e1CSGnKMxA==}
 
@@ -3035,7 +3038,7 @@ snapshots:
       tslib: 2.8.1
       tsutils: 3.21.0(typescript@5.8.3)
       typescript: 5.8.3
-      zod: 3.25.76
+      zod: 4.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -3119,7 +3122,5 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
-
-  zod@3.25.76: {}
 
   zod@4.0.2: {}
