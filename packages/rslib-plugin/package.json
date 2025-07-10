@@ -22,7 +22,8 @@
     "@rslib/core": "^0.10.5",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.16.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^4.0.2"
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
