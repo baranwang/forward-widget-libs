@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10",
-    "watch": "pnpm build --watch"
+    "watch": "pnpm build --watch",
+    "version": "changeset version",
+    "postversion": "npm run build",
+    "prerelease": "npm run build",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.1",
