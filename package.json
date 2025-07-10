@@ -1,19 +1,19 @@
 {
-  "name": "forward-widget-libs",
-  "private": true,
-  "scripts": {
-    "build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10",
-    "watch": "pnpm build --watch",
-    "version": "changeset version",
-    "postversion": "npm run build",
-    "prerelease": "npm run build",
-    "release": "changeset publish"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.1.1",
-    "@changesets/cli": "^2.29.5",
-    "cross-env": "^7.0.3",
-    "nx": "^21.2.2"
-  },
-  "packageManager": "pnpm@10.9.0"
+	"name": "forward-widget-libs",
+	"private": true,
+	"scripts": {
+		"build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10",
+		"watch": "pnpm build --watch",
+		"version": "changeset version",
+		"postversion": "npm run build",
+		"prerelease": "npm run build",
+		"release": "changeset publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.1.1",
+		"@changesets/cli": "^2.29.5",
+		"cross-env": "^7.0.3",
+		"nx": "^21.2.2"
+	},
+	"packageManager": "pnpm@10.9.0"
 }
