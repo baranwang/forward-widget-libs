@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { RsbuildPlugin } from '@rsbuild/core';
+import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
+import type { RsbuildPlugin, RsbuildPluginAPI } from '@rsbuild/core';
 import { camelCase, upperFirst } from 'lodash-es';
 import { type JSDocTagStructure, Project, type SourceFile, StructureKind, SyntaxKind } from 'ts-morph';
 
@@ -9,39 +10,46 @@ import { type JSDocTagStructure, Project, type SourceFile, StructureKind, Syntax
  */
 const toPascalCase = (str: string) => upperFirst(camelCase(str));
 
-/**
- * 安全地解析 WidgetMetadata 对象
- */
-function safeParseWidgetMetadata(content: string): WidgetMetadata | null {
-  try {
-    // 创建安全的执行环境
-    const sandbox = { WidgetMetadata: null as WidgetMetadata | null };
-    const func = new Function(
-      'sandbox',
-      `
-      let WidgetMetadata;
-      ${content};
-      sandbox.WidgetMetadata = WidgetMetadata;
-    `,
-    );
+function safeParseWidgetMetadataFactory(api: RsbuildPluginAPI) {
+  /**
+   * 安全地解析 WidgetMetadata 对象
+   */
+  return (content: string): WidgetMetadata | null => {
+    try {
+      // 创建安全的执行环境
+      const sandbox = { WidgetMetadata: null as WidgetMetadata | null };
+      const func = new Function(
+        'sandbox',
+        `
+        let WidgetMetadata;
+        ${content};
+        sandbox.WidgetMetadata = WidgetMetadata;
+      `,
+      );
 
-    func(sandbox);
+      func(sandbox);
 
-    if (!sandbox.WidgetMetadata) {
+      if (!sandbox.WidgetMetadata) {
+        return null;
+      }
+      const { data, success, error } = widgetMetadataSchema.safeParse(sandbox.WidgetMetadata);
+      if (!success) {
+        api.logger.error('解析 WidgetMetadata 失败，跳过类型生成', error);
+        return null;
+      }
+      return data;
+    } catch (error) {
+      api.logger.error('解析 WidgetMetadata 失败，跳过类型生成', error);
       return null;
     }
-
-    return sandbox.WidgetMetadata;
-  } catch (error) {
-    console.error('[plugin-forward-widget] 解析 WidgetMetadata 失败，跳过类型生成', error);
-    return null;
-  }
+  };
 }
 
 /**
  * 生成函数类型工厂函数
  */
-function generateFunctionTypesFactory(sourceFile: SourceFile) {
+function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceFile) {
+  const safeParseWidgetMetadata = safeParseWidgetMetadataFactory(api);
   return async (entry: string) => {
     const content = await fs.promises.readFile(entry, 'utf-8');
     const widgetMetadataObject = safeParseWidgetMetadata(content);
@@ -210,7 +218,7 @@ export const pluginForwardWidget = ({
 
       typeDefFile.insertText(0, `/// <reference types='@forward-widget/libs/env' />\n\n`);
 
-      const generateWidgetTypes = generateFunctionTypesFactory(typeDefFile);
+      const generateWidgetTypes = generateFunctionTypesFactory(api, typeDefFile);
 
       for (const outputFile of outputFiles) {
         await clearExportDeclaration(outputFile);

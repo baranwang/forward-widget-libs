@@ -1,0 +1,24 @@
+{
+  "name": "forward-widget-template-common",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch"
+  },
+  "devDependencies": {
+    "@forward-widget/libs": "workspace:*",
+    "@forward-widget/rslib-plugin": "workspace:*",
+    "@rslib/core": "^0.10.5"
+  }
+}
