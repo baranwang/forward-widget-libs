@@ -1,6 +1,14 @@
 WidgetMetadata = {
   id: 'test-widget',
   title: 'Test Widget',
+  globalParams: [
+    {
+      name: 'server',
+      title: 'Server',
+      type: 'constant',
+      value: 'https://api.example.com',
+    },
+  ],
   modules: [
     {
       id: 'test-module',
@@ -48,9 +56,71 @@ WidgetMetadata = {
       description: 'Test Module 2 Description',
       params: [],
     },
+    {
+      type: 'danmu',
+      id: 'searchDanmu',
+      functionName: 'searchDanmu',
+      title: 'Get Comments',
+      description: 'Get Comments Description',
+      params: [],
+    },
+    {
+      type: 'danmu',
+      id: 'getDetail',
+      functionName: 'getDetail',
+      title: 'Get Detail',
+      description: 'Get Detail Description',
+      params: [],
+    },
+    {
+      type: 'danmu',
+      id: 'getComments',
+      functionName: 'getComments',
+      title: 'Get Comments',
+      description: 'Get Comments Description',
+      params: [],
+    },
   ],
 };
 
-export function testFunction(params: TestFunctionParams) {
+export function testFunction(params: TestFunctionParams): VideoItem[] {
+  return [];
+}
+
+declare global {
+  interface AnimeItem {
+    animeId: number;
+    bangumiId: string;
+    animeTitle: string;
+    type: string;
+    typeDescription: string;
+    imageUrl: string;
+    startDate: string;
+    episodeCount: number;
+    rating: number;
+    isFavorited: boolean;
+  }
+}
+
+export function searchDanmu(params: SearchDanmuParams): SearchDanmuReturnType {
+  return Promise.resolve({
+    animes: [
+      {
+        animeId: 1223,
+        bangumiId: 'string',
+        animeTitle: 'string',
+        type: 'tvseries',
+        typeDescription: 'string',
+        imageUrl: 'string',
+        startDate: '2025-08-08T13:25:11.189Z',
+        episodeCount: 12,
+        rating: 0,
+        isFavorited: true,
+      },
+    ],
+  });
+}
+
+export function getDetail(params: GetDetailParams) {
   console.log(params);
 }

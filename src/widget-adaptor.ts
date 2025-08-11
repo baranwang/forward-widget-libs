@@ -53,10 +53,7 @@ export const WidgetAdaptor = {
   },
   storage: {
     getItem: (key: string) => {
-      const value = fs.readFileSync(
-        path.join(STORAGE_CONFIG.DIR, key),
-        'utf-8',
-      );
+      const value = fs.readFileSync(path.join(STORAGE_CONFIG.DIR, key), 'utf-8');
       return value;
     },
     setItem: (key: string, value: string) => {

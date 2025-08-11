@@ -20,6 +20,10 @@ interface WidgetMetadata {
    * @default 60
    */
   detailCacheDuration?: number;
+  /**
+   * 全局参数配置
+   */
+  globalParams?: WidgetModuleParam[];
   /** 功能模块列表 */
   modules: WidgetModule[];
   /** 搜索功能配置 */
@@ -33,9 +37,11 @@ interface WidgetMetadata {
   };
 }
 
-interface WidgetModule {
+interface BaseWidgetModule {
   /** 模块唯一标识符 */
   id: string;
+  /** 模块类型 */
+  type?: 'danmu';
   /** 模块标题 */
   title: string;
   /** 模块描述 */
@@ -55,14 +61,18 @@ interface WidgetModule {
   params?: WidgetModuleParam[];
 }
 
-type WidgetModuleParamType =
-  | 'input'
-  | 'constant'
-  | 'enumeration'
-  | 'count'
-  | 'page'
-  | 'offset'
-  | 'language';
+interface WidgetModuleVideo extends BaseWidgetModule {
+  type?: never;
+}
+
+interface WidgetModuleDanmu extends BaseWidgetModule {
+  type: 'danmu';
+  id: 'searchDanmu' | 'getDetail' | 'getComments';
+}
+
+type WidgetModule = WidgetModuleVideo | WidgetModuleDanmu;
+
+type WidgetModuleParamType = 'input' | 'constant' | 'enumeration' | 'count' | 'page' | 'offset' | 'language';
 
 interface WidgetModuleParam {
   /** 参数名 */
