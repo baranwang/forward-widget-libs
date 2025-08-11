@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.2.0
+
+### Minor Changes
+
+- e521147: 增加弹幕类型插件支持
+
 ## 1.1.1
 
 ## 1.1.0

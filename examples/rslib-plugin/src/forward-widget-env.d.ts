@@ -1,18 +1,18 @@
 /// <reference types='@forward-widget/libs/env' />
 interface AnimeItem {
-  animeId: number;
+    animeId: string | number;
 }
 
 interface EpisodeItem {
-  commentId: string;
+    commentId: string;
 }
 
 interface GlobalParams {
-  /**
-   * Server
-   * @default 'https://api.example.com'
-   */
-  server: 'https://api.example.com';
+    /**
+     * Server
+     * @default 'https://api.example.com'
+     */
+    server: 'https://api.example.com';
 }
 
 //#region test-module
@@ -22,16 +22,16 @@ interface GlobalParams {
  * export function testFunction(params: TestFunctionParams): Promise<VideoItem[]>
  */
 interface TestFunctionParams extends GlobalParams {
-  /** Foo */
-  foo: string;
-  /** Bar */
-  bar: 'option1' | 'option2' | 'option3';
-  /**
-   * Baz
-   * @description Baz Description
-   * @default 'test-value'
-   */
-  baz: 'test-value';
+    /** Foo */
+    foo: string;
+    /** Bar */
+    bar: 'option1' | 'option2' | 'option3';
+    /**
+     * Baz
+     * @description Baz Description
+     * @default 'test-value'
+     */
+    baz: 'test-value';
 }
 //#endregion test-module
 
@@ -41,7 +41,8 @@ interface TestFunctionParams extends GlobalParams {
  * @example
  * export function testFunction2(params: TestFunction2Params): Promise<VideoItem[]>
  */
-interface TestFunction2Params extends GlobalParams {}
+interface TestFunction2Params extends GlobalParams {
+}
 //#endregion test-module-2
 
 //#region searchDanmu
@@ -50,9 +51,11 @@ interface TestFunction2Params extends GlobalParams {}
  * @example
  * export function searchDanmu(params: SearchDanmuParams): SearchDanmuReturnType
  */
-interface SearchDanmuParams extends GlobalParams, BaseDanmuParams {}
+interface SearchDanmuParams extends GlobalParams, BaseDanmuParams {
+}
 
-interface SearchDanmuReturnType extends Promise<{ animes: Array<AnimeItem> }> {}
+interface SearchDanmuReturnType extends Promise<{ animes: Array<AnimeItem> }> {
+}
 //#endregion searchDanmu
 
 //#region getDetail
@@ -61,9 +64,11 @@ interface SearchDanmuReturnType extends Promise<{ animes: Array<AnimeItem> }> {}
  * @example
  * export function getDetail(params: GetDetailParams): GetDetailReturnType
  */
-interface GetDetailParams extends GlobalParams, BaseDanmuParams, AnimeItem {}
+interface GetDetailParams extends GlobalParams, BaseDanmuParams, AnimeItem {
+}
 
-interface GetDetailReturnType extends Promise<Array<EpisodeItem>> {}
+interface GetDetailReturnType extends Promise<Array<EpisodeItem>> {
+}
 //#endregion getDetail
 
 //#region getComments
@@ -72,17 +77,18 @@ interface GetDetailReturnType extends Promise<Array<EpisodeItem>> {}
  * @example
  * export function getComments(params: GetCommentsParams): GetCommentsReturnType
  */
-interface GetCommentsParams extends GlobalParams, BaseDanmuParams, EpisodeItem {}
+interface GetCommentsParams extends GlobalParams, BaseDanmuParams, EpisodeItem {
+}
 
 interface CommentItem {
-  cid: number;
-  p: string;
-  m: string;
+    cid: number;
+    p: string;
+    m: string;
 }
 
 interface GetCommentsReturnType {
-  /** 评论数量 */
-  count: number;
-  comments: Array<CommentItem>;
+    /** 评论数量 */
+    count: number;
+    comments: Array<CommentItem>;
 }
 //#endregion getComments
