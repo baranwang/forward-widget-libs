@@ -34,7 +34,9 @@ const STORAGE_CONFIG = {
 export const WidgetAdaptor = {
   http: {
     get: fetchFactory('GET'),
-    post: fetchFactory('POST'),
+    post: async <T>(url: string, body: any, options?: Omit<RequestInit, 'body'>) => {
+      return fetchFactory('POST')<T>(url, { ...options, body: JSON.stringify(body) });
+    },
   },
   tmdb: {
     get: async <T>(url: string, options?: RequestInit) => {
