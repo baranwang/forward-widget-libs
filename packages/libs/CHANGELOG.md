@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.2.3
+
+### Patch Changes
+
+- 9305817: 修改 WidgetAdaptor 的 post 方法以支持请求体的 JSON 序列化
+
 ## 1.2.2
 
 ### Patch Changes
