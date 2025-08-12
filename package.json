@@ -2,7 +2,8 @@
   "name": "forward-widget-libs",
   "private": true,
   "scripts": {
-    "build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10",
+    "dev": "nx run-many -t dev --parallel=10",
+    "build": "cross-env NX_DAEMON=false nx run-many -t build --parallel=10 --exclude='examples/*'",
     "watch": "pnpm build --watch",
     "version": "changeset version",
     "postversion": "npm run build",
