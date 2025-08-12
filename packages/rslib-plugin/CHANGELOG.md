@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.2.1
+
+### Patch Changes
+
+- 68c5be4: 替换 lodash-es 为 es-toolkit
+
 ## 1.2.0
 
 ### Minor Changes
