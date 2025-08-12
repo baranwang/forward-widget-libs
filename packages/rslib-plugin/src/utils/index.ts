@@ -1,4 +1,4 @@
-import { camelCase, upperFirst } from 'lodash-es';
+import { camelCase, upperFirst } from 'es-toolkit';
 import type { JSDocTagStructure, OptionalKind, PropertySignatureStructure } from 'ts-morph';
 import { StructureKind } from 'ts-morph';
 

@@ -1,6 +1,6 @@
 import type { SourceFile } from 'ts-morph';
 import { StructureKind } from 'ts-morph';
-import { toPascalCase, generateParamType } from '../utils';
+import { generateParamType, toPascalCase } from '../utils';
 
 /**
  * 生成 Video 模块接口
