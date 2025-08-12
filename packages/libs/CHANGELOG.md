@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.2.2
+
+### Patch Changes
+
+- 628f6a7: 修复 Widget.tmdb.get 的返回类型
+
 ## 1.2.1
 
 ## 1.2.0
