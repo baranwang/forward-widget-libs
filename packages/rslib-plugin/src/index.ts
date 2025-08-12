@@ -3,8 +3,7 @@ import path from 'node:path';
 import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
 import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from '@rsbuild/core';
 import { Project, type SourceFile, SyntaxKind } from 'ts-morph';
-
-import { generateDanmuModuleInterfaces } from './generators/danmu';
+import { addGlobalInterfaces, generateDanmuModuleInterfaces } from './generators/danmu';
 import { generateVideoModuleInterface } from './generators/video';
 import { generateParamType } from './utils';
 
@@ -70,16 +69,7 @@ function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceF
       }
 
       if (widgetMetadataObject.modules?.findIndex((item) => item.type === 'danmu') >= 0) {
-        sourceFile.addInterfaces([
-          {
-            name: 'AnimeItem',
-            properties: [{ name: 'animeId', type: 'string | number' }],
-          },
-          {
-            name: 'EpisodeItem',
-            properties: [{ name: 'commentId', type: 'string' }],
-          },
-        ]);
+        addGlobalInterfaces(sourceFile);
       }
 
       sourceFile.addInterface({

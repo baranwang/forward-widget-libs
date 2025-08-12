@@ -98,3 +98,14 @@ export function generateDanmuModuleInterfaces(sourceFile: SourceFile, module: Wi
         : [],
   });
 }
+
+export function addGlobalInterfaces(sourceFile: SourceFile): void {
+  sourceFile.addInterface({
+    name: 'AnimeItem',
+    properties: [{ name: 'animeId', type: 'string | number' }],
+  });
+  sourceFile.addInterface({
+    name: 'EpisodeItem',
+    properties: [{ name: 'commentId', type: 'string' }],
+  });
+}
