@@ -37,7 +37,7 @@ export const WidgetAdaptor = {
     post: fetchFactory('POST'),
   },
   tmdb: {
-    get: <T>(url: string, options?: RequestInit) => {
+    get: async <T>(url: string, options?: RequestInit) => {
       const urlObj = new URL(url, 'https://api.themoviedb.org/');
       options ||= {};
       options.headers = {
@@ -45,7 +45,8 @@ export const WidgetAdaptor = {
         accept: 'application/json',
         Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
       };
-      return WidgetAdaptor.http.get<T>(urlObj.toString(), options);
+      const resp = await WidgetAdaptor.http.get<T>(urlObj.toString(), options);
+      return resp.data;
     },
   },
   html: {
