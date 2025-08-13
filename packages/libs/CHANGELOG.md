@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.4.2
+
+### Patch Changes
+
+- 2e05130: 更新 GetDetailResponseItem 接口，修改 animeId 和 animeTitle 为 episodeId 和 episodeTitle
+
 ## 1.4.1
 
 ### Patch Changes
