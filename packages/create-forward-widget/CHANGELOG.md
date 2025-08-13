@@ -1,5 +1,11 @@
 # create-forward-widget
 
+## 1.3.0
+
+### Patch Changes
+
+- f2189f8: 调整模板与依赖版本，使新项目默认兼容最新的 dev-server 与环境定义更新。
+
 ## 1.2.3
 
 ## 1.2.2
