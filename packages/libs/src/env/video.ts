@@ -31,6 +31,8 @@ interface VideoItemChild {
   episode?: number;
   /** 描述 */
   description?: string;
+  /** 播放器类型 */
+  playerType?: 'system' | 'app';
 }
 
 /**
