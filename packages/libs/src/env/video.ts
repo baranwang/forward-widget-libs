@@ -40,3 +40,5 @@ interface VideoItem extends VideoItemChild {
   /** 子项目列表(最多一层) */
   childItems?: VideoItemChild[];
 }
+
+declare let loadDetail: (link: string) => Promise<Omit<VideoItem, 'videoUrl'> & Pick<Required<VideoItem>, 'videoUrl'>>;

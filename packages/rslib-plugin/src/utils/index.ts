@@ -1,6 +1,6 @@
 import { camelCase, upperFirst } from 'es-toolkit';
-import type { JSDocTagStructure, OptionalKind, PropertySignatureStructure } from 'ts-morph';
-import { StructureKind } from 'ts-morph';
+import type { JSDocTagStructure, OptionalKind, PropertySignatureStructure, SourceFile } from 'ts-morph';
+import { StructureKind, VariableDeclarationKind } from 'ts-morph';
 
 /**
  * 大驼峰命名转换
@@ -10,7 +10,7 @@ export const toPascalCase = (str: string): string => upperFirst(camelCase(str));
 /**
  * 获取参数类型字符串
  */
-export function getParamTypeString(param: WidgetModuleParam): string {
+function getParamTypeString(param: WidgetModuleParam): string {
   switch (param.type) {
     case 'enumeration':
       return param.enumOptions?.map((option) => `'${option.value}'`).join(' | ') || 'string';
@@ -22,9 +22,10 @@ export function getParamTypeString(param: WidgetModuleParam): string {
 }
 
 /**
- * 创建 JSDoc 标签
+ * 生成参数类型
  */
-export function createJSDocTags(param: WidgetModuleParam): JSDocTagStructure[] {
+export function generateParamType(param: WidgetModuleParam): OptionalKind<PropertySignatureStructure> {
+  const type = getParamTypeString(param);
   const tags: JSDocTagStructure[] = [];
 
   if (param.description) {
@@ -43,16 +44,6 @@ export function createJSDocTags(param: WidgetModuleParam): JSDocTagStructure[] {
     });
   }
 
-  return tags;
-}
-
-/**
- * 生成参数类型
- */
-export function generateParamType(param: WidgetModuleParam): OptionalKind<PropertySignatureStructure> {
-  const type = getParamTypeString(param);
-  const jsdocTags = createJSDocTags(param);
-
   return {
     name: param.name,
     type,
@@ -60,8 +51,48 @@ export function generateParamType(param: WidgetModuleParam): OptionalKind<Proper
       {
         kind: StructureKind.JSDoc,
         description: param.title,
-        tags: jsdocTags,
+        tags,
       },
     ],
   };
+}
+
+export function generateTypeName(module: WidgetModule) {
+  const paramsTypeName = toPascalCase(`${module.functionName}Params`);
+  const returnTypeName = toPascalCase(`${module.functionName}ReturnType`);
+  return {
+    paramsTypeName,
+    returnTypeName,
+  };
+}
+
+export function generateModuleFunctionType(sourceFile: SourceFile, module: WidgetModule) {
+  const { paramsTypeName, returnTypeName } = generateTypeName(module);
+  const tags: JSDocTagStructure[] = [];
+
+  if (module.description) {
+    tags.push({
+      kind: StructureKind.JSDocTag,
+      tagName: 'description',
+      text: module.description,
+    });
+  }
+
+  sourceFile.addVariableStatement({
+    declarationKind: VariableDeclarationKind.Let,
+    hasDeclareKeyword: true,
+    declarations: [
+      {
+        name: module.functionName,
+        type: `(params: ${paramsTypeName}) => ${returnTypeName} | Promise<${returnTypeName}>`,
+      },
+    ],
+    docs: [
+      {
+        kind: StructureKind.JSDoc,
+        description: module.title,
+        tags,
+      },
+    ],
+  });
 }

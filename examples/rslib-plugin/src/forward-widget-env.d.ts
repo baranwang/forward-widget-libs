@@ -1,12 +1,4 @@
 /// <reference types='@forward-widget/libs/env' />
-interface AnimeItem {
-    animeId: string | number;
-}
-
-interface EpisodeItem {
-    commentId: string;
-}
-
 interface GlobalParams {
     /**
      * Server
@@ -17,10 +9,6 @@ interface GlobalParams {
 
 //#region test-module
 /** Params of Test Module */
-/**
- * @example
- * export function testFunction(params: TestFunctionParams): Promise<VideoItem[]>
- */
 interface TestFunctionParams extends GlobalParams {
     /** Foo */
     foo: string;
@@ -33,62 +21,76 @@ interface TestFunctionParams extends GlobalParams {
      */
     baz: 'test-value';
 }
+
+/** Return Type of Test Module */
+interface TestFunctionReturnType extends Array<VideoItem> {
+}
+
+/**
+ * Test Module
+ * @description Test Module Description
+ */
+declare let testFunction: (params: TestFunctionParams) => TestFunctionReturnType | Promise<TestFunctionReturnType>;
 //#endregion test-module
 
 //#region test-module-2
 /** Params of Test Module 2 */
-/**
- * @example
- * export function testFunction2(params: TestFunction2Params): Promise<VideoItem[]>
- */
 interface TestFunction2Params extends GlobalParams {
 }
+
+/** Return Type of Test Module 2 */
+interface TestFunction2ReturnType extends Array<VideoItem> {
+}
+
+/**
+ * Test Module 2
+ * @description Test Module 2 Description
+ */
+declare let testFunction2: (params: TestFunction2Params) => TestFunction2ReturnType | Promise<TestFunction2ReturnType>;
 //#endregion test-module-2
 
 //#region searchDanmu
 /** Params of Get Comments */
-/**
- * @example
- * export function searchDanmu(params: SearchDanmuParams): SearchDanmuReturnType
- */
 interface SearchDanmuParams extends GlobalParams, BaseDanmuParams {
 }
 
-interface SearchDanmuReturnType extends Promise<{ animes: Array<AnimeItem> }> {
+interface SearchDanmuReturnType {
+    animes: Array<AnimeItem>;
 }
+
+/**
+ * Get Comments
+ * @description Get Comments Description
+ */
+declare let searchDanmu: (params: SearchDanmuParams) => SearchDanmuReturnType | Promise<SearchDanmuReturnType>;
 //#endregion searchDanmu
 
 //#region getDetail
 /** Params of Get Detail */
-/**
- * @example
- * export function getDetail(params: GetDetailParams): GetDetailReturnType
- */
 interface GetDetailParams extends GlobalParams, BaseDanmuParams, AnimeItem {
 }
 
-interface GetDetailReturnType extends Promise<Array<EpisodeItem>> {
+interface GetDetailReturnType extends Array<EpisodeItem> {
 }
+
+/**
+ * Get Detail
+ * @description Get Detail Description
+ */
+declare let getDetail: (params: GetDetailParams) => GetDetailReturnType | Promise<GetDetailReturnType>;
 //#endregion getDetail
 
 //#region getComments
 /** Params of Get Comments */
-/**
- * @example
- * export function getComments(params: GetCommentsParams): GetCommentsReturnType
- */
 interface GetCommentsParams extends GlobalParams, BaseDanmuParams, EpisodeItem {
 }
 
-interface CommentItem {
-    cid: number;
-    p: string;
-    m: string;
+interface GetCommentsReturnType extends GetCommentsResponse {
 }
 
-interface GetCommentsReturnType {
-    /** 评论数量 */
-    count: number;
-    comments: Array<CommentItem>;
-}
+/**
+ * Get Comments
+ * @description Get Comments Description
+ */
+declare let getComments: (params: GetCommentsParams) => GetCommentsReturnType | Promise<GetCommentsReturnType>;
 //#endregion getComments

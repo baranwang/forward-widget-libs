@@ -1,6 +1,10 @@
 WidgetMetadata = {
   id: 'test-widget',
   title: 'Test Widget',
+  author: 'Baran',
+  description: 'Test Widget Description',
+  version: '0.0.0',
+  requiredVersion: '0.0.2',
   globalParams: [
     {
       name: 'server',
@@ -83,44 +87,39 @@ WidgetMetadata = {
   ],
 };
 
-export function testFunction(params: TestFunctionParams): VideoItem[] {
-  return [];
-}
+// testFunction = function testFunction() {
+//   console.log('testFunction');
+//   return [];
+// };
 
-declare global {
-  interface AnimeItem {
-    animeId: number;
-    bangumiId: string;
-    animeTitle: string;
-    type: string;
-    typeDescription: string;
-    imageUrl: string;
-    startDate: string;
-    episodeCount: number;
-    rating: number;
-    isFavorited: boolean;
-  }
-}
+// export function testFunction(params: TestFunctionParams): VideoItem[] {
+//   return [];
+// }
 
-export function searchDanmu(params: SearchDanmuParams): SearchDanmuReturnType {
-  return Promise.resolve({
-    animes: [
-      {
-        animeId: 1223,
-        bangumiId: 'string',
-        animeTitle: 'string',
-        type: 'tvseries',
-        typeDescription: 'string',
-        imageUrl: 'string',
-        startDate: '2025-08-08T13:25:11.189Z',
-        episodeCount: 12,
-        rating: 0,
-        isFavorited: true,
-      },
-    ],
-  });
-}
+// export function searchDanmu(params: SearchDanmuParams): SearchDanmuReturnType {
+//   return Promise.resolve({
+//     animes: [
+//       {
+//         animeId: 1223,
+//         bangumiId: 'string',
+//         animeTitle: 'string',
+//         type: 'tvseries',
+//         typeDescription: 'string',
+//         imageUrl: 'string',
+//         startDate: '2025-08-08T13:25:11.189Z',
+//         episodeCount: 12,
+//         rating: 0,
+//         isFavorited: true,
+//       },
+//     ],
+//   });
+// }
 
-export function getDetail(params: GetDetailParams) {
+// export function getDetail(params: GetDetailParams) {
+//   console.log(params);
+// }
+
+testFunction = async (params) => {
   console.log(params);
-}
+  return [];
+};

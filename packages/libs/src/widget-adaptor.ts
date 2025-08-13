@@ -3,21 +3,49 @@ import os from 'node:os';
 import path from 'node:path';
 import { load } from 'cheerio';
 
-const fetchFactory = (method: 'GET' | 'POST') => {
-  return async <T>(url: string, options?: RequestInit) => {
-    return fetch(url, { ...options, method }).then(async (res) => {
-      let data = (await res.text()) as T;
-      try {
-        data = JSON.parse(data as string) as T;
-      } catch (error) {
-        console.error(error);
-      }
-      return {
-        data,
-        statusCode: res.status,
-        headers: Object.fromEntries(res.headers),
-      };
-    });
+interface BaseRequestOptions {
+  headers?: Record<string, string>;
+  params?: Record<string, string>;
+  allow_redirects?: boolean;
+}
+
+interface GetRequestOptions extends BaseRequestOptions {}
+
+interface PostRequestOptions extends BaseRequestOptions {
+  body?: unknown;
+}
+
+const createHttpRequest = async <T>(
+  url: string,
+  method: 'GET' | 'POST',
+  options?: BaseRequestOptions & { body?: unknown },
+) => {
+  const fetchOptions: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  };
+
+  if (method === 'POST' && options?.body) {
+    fetchOptions.body = JSON.stringify(options.body);
+  }
+
+  const response = await fetch(url, fetchOptions);
+  const textData = await response.text();
+
+  let data: T;
+  try {
+    data = JSON.parse(textData) as T;
+  } catch {
+    data = textData as T;
+  }
+
+  return {
+    data,
+    statusCode: response.status,
+    headers: Object.fromEntries(response.headers),
   };
 };
 
@@ -33,14 +61,16 @@ const STORAGE_CONFIG = {
 
 export const WidgetAdaptor = {
   http: {
-    get: fetchFactory('GET'),
-    post: async <T>(url: string, body: any, options?: Omit<RequestInit, 'body'>) => {
-      return fetchFactory('POST')<T>(url, { ...options, body: JSON.stringify(body) });
+    get: async <T>(url: string, options?: GetRequestOptions) => {
+      return createHttpRequest<T>(url, 'GET', options);
+    },
+    post: async <T>(url: string, body: unknown, options?: PostRequestOptions) => {
+      return createHttpRequest<T>(url, 'POST', { ...options, body });
     },
   },
   tmdb: {
-    get: async <T>(url: string, options?: RequestInit) => {
-      const urlObj = new URL(url, 'https://api.themoviedb.org/');
+    get: async <T>(url: string, options?: GetRequestOptions) => {
+      const urlObj = new URL(`/3/${url}`, 'https://api.themoviedb.org/');
       options ||= {};
       options.headers = {
         ...options.headers,

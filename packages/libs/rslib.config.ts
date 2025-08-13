@@ -21,7 +21,7 @@ const tsToZodPlugin = (): RsbuildPlugin => {
           })
           .join('\n');
         const project = new Project({
-          useInMemoryFileSystem: true, // 关键：所有操作都在内存中进行
+          useInMemoryFileSystem: true,
         });
         const sourceFile = project.createSourceFile('temp.ts', envFiles);
         sourceFile.getInterfaces().forEach((interfaceDeclaration) => {

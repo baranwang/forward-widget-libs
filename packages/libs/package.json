@@ -16,11 +16,7 @@
   ],
   "scripts": {
     "build": "rslib build",
-    "dev": "rslib build --watch",
-    "version": "changeset version",
-    "postversion": "npm run build",
-    "prerelease": "npm run build",
-    "release": "changeset publish"
+    "dev": "rslib build --watch"
   },
   "dependencies": {
     "cheerio": "^1.1.0"

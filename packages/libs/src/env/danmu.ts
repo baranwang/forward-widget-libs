@@ -44,3 +44,23 @@ interface BaseDanmuParams {
    */
   videoUrl?: string;
 }
+
+interface AnimeItem {
+  animeId: string | number;
+  animeTitle: string;
+}
+
+interface EpisodeItem {
+  commentId: string;
+}
+
+interface CommentItem {
+  cid: number;
+  p: string;
+  m: string;
+}
+
+interface GetCommentsResponse {
+  count: number;
+  comments: Array<CommentItem>;
+}

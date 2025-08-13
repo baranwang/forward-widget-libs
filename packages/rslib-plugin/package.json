@@ -8,6 +8,7 @@
       "import": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -25,7 +26,9 @@
     "zod": "^4.0.2"
   },
   "dependencies": {
+    "@hono/node-server": "^1.18.2",
     "es-toolkit": "^1.39.9",
+    "hono": "^4.9.1",
     "ts-morph": "^26.0.0"
   },
   "repository": {

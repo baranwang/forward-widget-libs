@@ -8,5 +8,5 @@ node_modules
 dist/
 storybook-static
 
-# Nx
-.nx
+# Turbo
+.turbo

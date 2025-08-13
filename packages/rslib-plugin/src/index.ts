@@ -3,7 +3,7 @@ import path from 'node:path';
 import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
 import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from '@rsbuild/core';
 import { Project, type SourceFile, SyntaxKind } from 'ts-morph';
-import { addGlobalInterfaces, generateDanmuModuleInterfaces } from './generators/danmu';
+import { generateDanmuModuleInterfaces } from './generators/danmu';
 import { generateVideoModuleInterface } from './generators/video';
 import { generateParamType } from './utils';
 
@@ -14,6 +14,12 @@ interface ForwardWidgetPluginOptions {
    * @default `src/forward-widget-env.d.ts`
    */
   typesFilePath?: string;
+
+  /**
+   * 监听端口
+   * @default 8000
+   */
+  devPort?: number;
 }
 
 // 元数据解析工具
@@ -66,10 +72,6 @@ function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceF
 
       if (!widgetMetadataObject) {
         return;
-      }
-
-      if (widgetMetadataObject.modules?.findIndex((item) => item.type === 'danmu') >= 0) {
-        addGlobalInterfaces(sourceFile);
       }
 
       sourceFile.addInterface({
@@ -188,6 +190,7 @@ async function setupTypeDefinitionFile(dtsPath: string): Promise<SourceFile> {
 // 主插件导出
 export const pluginForwardWidget = ({
   typesFilePath = 'src/forward-widget-env.d.ts',
+  devPort = 8000,
 }: ForwardWidgetPluginOptions = {}): RsbuildPlugin => ({
   name: 'plugin-forward-widget',
 
@@ -200,11 +203,32 @@ export const pluginForwardWidget = ({
       return code;
     });
 
-    api.onAfterBuild(async ({ stats }) => {
+    api.modifyRsbuildConfig((userConfig, { mergeRsbuildConfig }) => {
+      return mergeRsbuildConfig(userConfig, {
+        output: {
+          target: 'web',
+        },
+      });
+    });
+
+    api.onAfterBuild(async ({ stats, isWatch, isFirstCompile }) => {
       try {
         await processAfterBuild(api, stats, dtsPath);
       } catch (error) {
         api.logger.error('Forward Widget 插件处理失败', error);
+      }
+
+      try {
+        if (isWatch && isFirstCompile) {
+          const { createDevServer } = await import('./dev-server');
+
+          await createDevServer({
+            api,
+            port: devPort,
+          });
+        }
+      } catch (error) {
+        api.logger.error('Forward Widget 插件开发服务器启动失败', error);
       }
     });
   },
