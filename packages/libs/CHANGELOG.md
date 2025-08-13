@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.4.0
+
+### Minor Changes
+
+- 32d48fb: 对齐 forward widget 类型
+
 ## 1.3.0
 
 ### Minor Changes
