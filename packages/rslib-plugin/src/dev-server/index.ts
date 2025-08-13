@@ -53,12 +53,11 @@ export const createDevServer = async (options: DevServerOptions) => {
   // 输出访问地址信息
   const localIPs = getLocalIPs();
   api.logger.ready(`Forward Widget 插件已启动，监听地址`);
-  api.logger.info(`  - 本地访问: http://localhost:${port}`);
+  api.logger.info(`  http://localhost:${port}`);
 
   if (localIPs.length > 0) {
-    localIPs.forEach((ip, index) => {
-      const label = localIPs.length > 1 ? `局域网访问 ${index + 1}` : '局域网访问';
-      api.logger.info(`  - ${label}: http://${ip}:${port}`);
+    localIPs.forEach((ip) => {
+      api.logger.info(`  http://${ip}:${port}`);
     });
   }
 

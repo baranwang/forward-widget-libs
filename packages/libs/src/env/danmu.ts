@@ -50,6 +50,14 @@ interface AnimeItem {
   animeTitle: string;
 }
 
+interface GetDetailResponseItem {
+  /**
+   * 透传给 getComments 的 commentId
+   */
+  animeId: string | number;
+  animeTitle: string;
+}
+
 interface EpisodeItem {
   commentId: string;
 }

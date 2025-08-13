@@ -8,7 +8,7 @@ import { generateModuleFunctionType, generateTypeName } from '../utils';
 function getReturnTypeExtends(moduleId: string): WriterFunction | undefined {
   switch (moduleId) {
     case 'getDetail':
-      return (writer) => writer.write('Array<EpisodeItem>');
+      return (writer) => writer.write('Array<GetDetailResponseItem>');
     case 'getComments':
       return (writer) => writer.write('GetCommentsResponse');
     default:
