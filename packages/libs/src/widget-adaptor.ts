@@ -3,22 +3,16 @@ import os from 'node:os';
 import path from 'node:path';
 import { load } from 'cheerio';
 
-interface BaseRequestOptions {
+interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, string>;
   allow_redirects?: boolean;
 }
 
-interface GetRequestOptions extends BaseRequestOptions {}
-
-interface PostRequestOptions extends BaseRequestOptions {
-  body?: unknown;
-}
-
 const createHttpRequest = async <T>(
   url: string,
   method: 'GET' | 'POST',
-  options?: BaseRequestOptions & { body?: unknown },
+  options?: RequestOptions & { body?: unknown },
 ) => {
   const fetchOptions: RequestInit = {
     method,
@@ -61,15 +55,15 @@ const STORAGE_CONFIG = {
 
 export const WidgetAdaptor = {
   http: {
-    get: async <T>(url: string, options?: GetRequestOptions) => {
+    get: async <T>(url: string, options?: RequestOptions) => {
       return createHttpRequest<T>(url, 'GET', options);
     },
-    post: async <T>(url: string, body: unknown, options?: PostRequestOptions) => {
+    post: async <T>(url: string, body: unknown, options?: RequestOptions) => {
       return createHttpRequest<T>(url, 'POST', { ...options, body });
     },
   },
   tmdb: {
-    get: async <T>(url: string, options?: GetRequestOptions) => {
+    get: async <T>(url: string, options?: RequestOptions) => {
       const urlObj = new URL(`/3/${url}`, 'https://api.themoviedb.org/');
       options ||= {};
       options.headers = {
@@ -86,21 +80,19 @@ export const WidgetAdaptor = {
   },
   storage: {
     getItem: (key: string) => {
-      const value = fs.readFileSync(path.join(STORAGE_CONFIG.DIR, key), 'utf-8');
-      return value;
+      return fs.promises.readFile(path.join(STORAGE_CONFIG.DIR, key), 'utf-8');
     },
     setItem: (key: string, value: string) => {
-      fs.writeFileSync(path.join(STORAGE_CONFIG.DIR, key), value);
+      return fs.promises.writeFile(path.join(STORAGE_CONFIG.DIR, key), value);
     },
     removeItem: (key: string) => {
-      fs.promises.unlink(path.join(STORAGE_CONFIG.DIR, key));
+      return fs.promises.rm(path.join(STORAGE_CONFIG.DIR, key));
     },
     clear: () => {
-      fs.rmSync(STORAGE_CONFIG.DIR, { recursive: true });
+      return fs.promises.rm(STORAGE_CONFIG.DIR, { recursive: true });
     },
     keys: () => {
-      const files = fs.readdirSync(STORAGE_CONFIG.DIR);
-      return files.map((file) => path.basename(file));
+      return fs.promises.readdir(STORAGE_CONFIG.DIR).then((files) => files.map((file) => path.basename(file)));
     },
   },
 };
