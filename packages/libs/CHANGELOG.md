@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.3.0
+
+### Minor Changes
+
+- f2189f8: 更新 `video`/`danmu` 环境定义与 `widget-adaptor` 适配逻辑，配合 dev-server 能力提供更完善的类型与运行时行为。
+
 ## 1.2.3
 
 ### Patch Changes

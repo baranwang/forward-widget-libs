@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.3.0
+
+### Minor Changes
+
+- f2189f8: 新增本地开发服务器（dev-server），支持目录浏览、文件预览与本地服务启动；完善开发体验。
+
 ## 1.2.3
 
 ## 1.2.2
