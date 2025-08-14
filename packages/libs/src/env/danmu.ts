@@ -63,8 +63,8 @@ interface EpisodeItem {
 }
 
 interface CommentItem {
-  cid: number;
-  p: string;
+  cid: number | string;
+  p: `${number},${1 | 4 | 5},${number},${string}`;
   m: string;
 }
 
