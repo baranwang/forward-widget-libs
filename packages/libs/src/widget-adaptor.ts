@@ -25,8 +25,13 @@ const createHttpRequest = async <T>(
   if (method === 'POST' && options?.body) {
     fetchOptions.body = JSON.stringify(options.body);
   }
-
-  const response = await fetch(url, fetchOptions);
+  const uri = new URL(url);
+  if (options?.params) {
+    Object.entries(options.params).forEach(([key, value]) => {
+      uri.searchParams.set(key, value);
+    });
+  }
+  const response = await fetch(uri, fetchOptions);
   const textData = await response.text();
 
   let data: T;
