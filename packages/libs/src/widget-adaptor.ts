@@ -41,10 +41,20 @@ const createHttpRequest = async <T>(
     data = textData as T;
   }
 
+  // 处理多值 headers，如 set-cookie
+  const headers: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    if (headers[key]) {
+      headers[key] = `${headers[key]}, ${value}`;
+    } else {
+      headers[key] = value;
+    }
+  });
+
   return {
     data,
     statusCode: response.status,
-    headers: Object.fromEntries(response.headers),
+    headers,
   };
 };
 
