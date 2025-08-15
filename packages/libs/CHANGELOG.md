@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.5.2
+
+### Patch Changes
+
+- c4a7749: 优化 HTTP 请求体处理，支持字符串和对象类型的 body
+
 ## 1.5.1
 
 ### Patch Changes
