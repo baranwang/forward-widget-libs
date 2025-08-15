@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.5.1
+
+### Patch Changes
+
+- 0840c7b: 处理多值 headers，优化 HTTP 请求响应中的 headers 结构
+
 ## 1.5.0
 
 ### Minor Changes
