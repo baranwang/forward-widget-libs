@@ -23,7 +23,7 @@ const createHttpRequest = async <T>(
   };
 
   if (method === 'POST' && options?.body) {
-    fetchOptions.body = JSON.stringify(options.body);
+    fetchOptions.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
   }
   const uri = new URL(url);
   if (options?.params) {
