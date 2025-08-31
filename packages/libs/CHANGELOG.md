@@ -1,5 +1,16 @@
 # @forward-widget/libs
 
+## 1.7.0
+
+### Minor Changes
+
+- 960cb5f: 在 Danmu 模块中添加分段时间参数及响应接口
+
+### Patch Changes
+
+- b4873ad: 在 WidgetAdaptor 中修复存储方法，确保文件路径编码正确
+- 2b3aea1: 在 WidgetAdaptor 中优化存储方法，增加文件存在性检查并修正写入编码
+
 ## 1.6.0
 
 ### Minor Changes
