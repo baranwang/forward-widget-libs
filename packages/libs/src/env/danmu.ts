@@ -73,7 +73,7 @@ interface GetCommentsResponse {
   comments: Array<CommentItem>;
 }
 
-interface GetDanmuWithSegmentTimeParams extends BaseDanmuParams, AnimeItem {
+interface GetDanmuWithSegmentTimeParams extends BaseDanmuParams, AnimeItem, EpisodeItem {
   /**
    * 分段时间
    */
