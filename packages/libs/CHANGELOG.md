@@ -1,5 +1,15 @@
 # @forward-widget/libs
 
+## 1.6.0
+
+### Minor Changes
+
+- 4f6c7f2: 在 HTTP 请求中添加 zlibMode 选项，支持解压缩响应数据
+
+### Patch Changes
+
+- c4a7749: 优化 HTTP 请求体处理，支持字符串和对象类型的 body
+
 ## 1.5.1
 
 ### Patch Changes
