@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.7.0
+
+### Minor Changes
+
+- 960cb5f: 在 Danmu 模块中添加分段时间参数及响应接口
+
 ## 1.6.0
 
 ## 1.5.1
