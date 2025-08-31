@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.7.1
+
+### Patch Changes
+
+- 87e654d: 在 Danmu 模块的参数接口中添加 EpisodeItem，以支持分段时间的相关功能
+
 ## 1.7.0
 
 ### Minor Changes
