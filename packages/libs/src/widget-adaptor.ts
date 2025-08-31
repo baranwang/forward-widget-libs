@@ -1,11 +1,14 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
+import { gunzip } from 'node:zlib';
 import { load } from 'cheerio';
 
 interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, string>;
+  zlibMode?: boolean;
   allow_redirects?: boolean;
 }
 
@@ -31,14 +34,18 @@ const createHttpRequest = async <T>(
       uri.searchParams.set(key, value);
     });
   }
-  const response = await fetch(uri, fetchOptions);
-  const textData = await response.text();
 
   let data: T;
-  try {
-    data = JSON.parse(textData) as T;
-  } catch {
-    data = textData as T;
+  const response = await fetch(uri, fetchOptions);
+  if (options?.zlibMode) {
+    data = (await promisify(gunzip)(await response.arrayBuffer())) as T;
+  } else {
+    const textData = await response.text();
+    try {
+      data = JSON.parse(textData) as T;
+    } catch {
+      data = textData as T;
+    }
   }
 
   // 处理多值 headers，如 set-cookie
@@ -94,20 +101,14 @@ export const WidgetAdaptor = {
     load: load as typeof import('cheerio').load,
   },
   storage: {
-    getItem: (key: string) => {
+    get: (key: string) => {
       return fs.promises.readFile(path.join(STORAGE_CONFIG.DIR, key), 'utf-8');
     },
-    setItem: (key: string, value: string) => {
+    set: (key: string, value: string) => {
       return fs.promises.writeFile(path.join(STORAGE_CONFIG.DIR, key), value);
-    },
-    removeItem: (key: string) => {
-      return fs.promises.rm(path.join(STORAGE_CONFIG.DIR, key));
     },
     clear: () => {
       return fs.promises.rm(STORAGE_CONFIG.DIR, { recursive: true });
-    },
-    keys: () => {
-      return fs.promises.readdir(STORAGE_CONFIG.DIR).then((files) => files.map((file) => path.basename(file)));
     },
   },
 };
