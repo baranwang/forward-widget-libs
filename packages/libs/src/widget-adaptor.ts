@@ -102,14 +102,14 @@ export const WidgetAdaptor = {
   },
   storage: {
     get: (key: string) => {
-      const filePath = path.join(STORAGE_CONFIG.DIR, key);
+      const filePath = path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key));
       if (!fs.existsSync(filePath)) {
         return null;
       }
-      return fs.promises.readFile(path.join(STORAGE_CONFIG.DIR, key), 'utf-8');
+      return fs.promises.readFile(filePath, 'utf-8');
     },
     set: (key: string, value: string) => {
-      return fs.promises.writeFile(path.join(STORAGE_CONFIG.DIR, key), value, 'utf-8');
+      return fs.promises.writeFile(path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key)), value, 'utf-8');
     },
     clear: () => {
       return fs.promises.rm(STORAGE_CONFIG.DIR, { recursive: true });
