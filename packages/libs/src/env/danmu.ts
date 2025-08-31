@@ -72,3 +72,12 @@ interface GetCommentsResponse {
   count: number;
   comments: Array<CommentItem>;
 }
+
+interface GetDanmuWithSegmentTimeParams extends BaseDanmuParams, AnimeItem {
+  /**
+   * 分段时间
+   */
+  segmentTime: number;
+}
+
+interface GetDanmuWithSegmentTimeResponse extends GetCommentsResponse {}

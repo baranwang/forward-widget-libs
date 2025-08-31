@@ -67,7 +67,7 @@ interface WidgetModuleVideo extends BaseWidgetModule {
 
 interface WidgetModuleDanmu extends BaseWidgetModule {
   type: 'danmu';
-  id: 'searchDanmu' | 'getDetail' | 'getComments';
+  id: 'searchDanmu' | 'getDetail' | 'getComments' | 'getDanmuWithSegmentTime';
 }
 
 type WidgetModule = WidgetModuleVideo | WidgetModuleDanmu;

@@ -11,6 +11,8 @@ function getReturnTypeExtends(moduleId: string): WriterFunction | undefined {
       return (writer) => writer.write('Array<GetDetailResponseItem>');
     case 'getComments':
       return (writer) => writer.write('GetCommentsResponse');
+    case 'getDanmuWithSegmentTime':
+      return (writer) => writer.write('GetDanmuWithSegmentTimeResponse');
     default:
       return undefined;
   }
@@ -42,6 +44,9 @@ export function generateDanmuModuleInterfaces(sourceFile: SourceFile, module: Wi
       }
       if (id === 'getComments') {
         writer.write(', EpisodeItem');
+      }
+      if (id === 'getDanmuWithSegmentTime') {
+        writer.write(', GetDanmuWithSegmentTimeParams');
       }
     },
   });
