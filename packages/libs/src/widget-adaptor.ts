@@ -106,13 +106,13 @@ export const WidgetAdaptor = {
       if (!fs.existsSync(filePath)) {
         return null;
       }
-      return fs.promises.readFile(filePath, 'utf-8');
+      return fs.readFileSync(filePath, 'utf-8');
     },
     set: (key: string, value: string) => {
-      return fs.promises.writeFile(path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key)), value, 'utf-8');
+      return fs.writeFileSync(path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key)), value, 'utf-8');
     },
     clear: () => {
-      return fs.promises.rm(STORAGE_CONFIG.DIR, { recursive: true });
+      return fs.rmSync(STORAGE_CONFIG.DIR, { recursive: true });
     },
   },
 };
