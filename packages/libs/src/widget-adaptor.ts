@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { gunzip } from 'node:zlib';
+import { inflate } from 'node:zlib';
 import { load } from 'cheerio';
 
 interface RequestOptions {
@@ -38,7 +38,7 @@ const createHttpRequest = async <T>(
   let data: T;
   const response = await fetch(uri, fetchOptions);
   if (options?.zlibMode) {
-    data = (await promisify(gunzip)(await response.arrayBuffer())) as T;
+    data = (await promisify(inflate)(await response.arrayBuffer())).toString('utf-8') as T;
   } else {
     const textData = await response.text();
     try {
