@@ -1,5 +1,12 @@
 # @forward-widget/libs
 
+## 1.7.2
+
+### Patch Changes
+
+- 7c7a851: WidgetAdaptor 中补充 remove 方法
+- 586de84: 在 WidgetAdaptor 中将异步文件操作改为同步操作，对齐 Widget
+
 ## 1.7.1
 
 ### Patch Changes
