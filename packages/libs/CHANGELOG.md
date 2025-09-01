@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.7.3
+
+### Patch Changes
+
+- 8f43d12: 修复 zlibMode 获取数据的问题
+
 ## 1.7.2
 
 ### Patch Changes
