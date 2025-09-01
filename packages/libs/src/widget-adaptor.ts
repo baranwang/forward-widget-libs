@@ -73,6 +73,9 @@ const STORAGE_CONFIG = {
     }
     return dir;
   },
+  getFilePath: (key: string) => {
+    return path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key));
+  },
 };
 
 export const WidgetAdaptor = {
@@ -102,14 +105,17 @@ export const WidgetAdaptor = {
   },
   storage: {
     get: (key: string) => {
-      const filePath = path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key));
+      const filePath = STORAGE_CONFIG.getFilePath(key);
       if (!fs.existsSync(filePath)) {
         return null;
       }
       return fs.readFileSync(filePath, 'utf-8');
     },
     set: (key: string, value: string) => {
-      return fs.writeFileSync(path.join(STORAGE_CONFIG.DIR, encodeURIComponent(key)), value, 'utf-8');
+      return fs.writeFileSync(STORAGE_CONFIG.getFilePath(key), value, 'utf-8');
+    },
+    remove: (key: string) => {
+      return fs.rmSync(STORAGE_CONFIG.getFilePath(key));
     },
     clear: () => {
       return fs.rmSync(STORAGE_CONFIG.DIR, { recursive: true });
