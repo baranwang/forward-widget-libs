@@ -9,6 +9,7 @@ interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, string>;
   zlibMode?: boolean;
+  base64Data?: boolean;
   allow_redirects?: boolean;
 }
 
@@ -37,7 +38,12 @@ const createHttpRequest = async <T>(
 
   let data: T;
   const response = await fetch(uri, fetchOptions);
-  if (options?.zlibMode) {
+  if (options?.base64Data) {
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64Data = buffer.toString('base64');
+    data = base64Data as T;
+  } else if (options?.zlibMode) {
     data = (await promisify(inflate)(await response.arrayBuffer())).toString('utf-8') as T;
   } else {
     const textData = await response.text();
