@@ -1,6 +1,6 @@
 {
   "name": "@forward-widget/libs",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "type": "module",
   "exports": {
     "./widget-adaptor": {

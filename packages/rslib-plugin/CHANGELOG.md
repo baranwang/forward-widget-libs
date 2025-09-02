@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.8.2
+
+### Patch Changes
+
+- de78782: 修正 generateModuleFunctionType 的返回类型以确保 Promise 返回 null 值
+
 ## 1.8.1
 
 ### Patch Changes
