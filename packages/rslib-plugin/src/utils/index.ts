@@ -84,7 +84,7 @@ export function generateModuleFunctionType(sourceFile: SourceFile, module: Widge
     declarations: [
       {
         name: module.functionName,
-        type: `(params: ${paramsTypeName}) => ${returnTypeName} | Promise<${returnTypeName}>`,
+        type: `(params: ${paramsTypeName}) => null | ${returnTypeName} | Promise<${returnTypeName}>`,
       },
     ],
     docs: [
