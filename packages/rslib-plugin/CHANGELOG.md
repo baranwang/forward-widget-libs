@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.8.1
+
+### Patch Changes
+
+- a0f8c18: 更新 generateModuleFunctionType 的返回类型以支持 null 值
+
 ## 1.8.0
 
 ## 1.7.3
