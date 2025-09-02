@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.8.3
+
+### Patch Changes
+
+- bbefea2: 在 WidgetAdaptor 中添加 keys 方法以获取存储目录中的所有键
+
 ## 1.8.2
 
 ## 1.8.1
