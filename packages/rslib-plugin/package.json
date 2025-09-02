@@ -1,6 +1,6 @@
 {
   "name": "@forward-widget/rslib-plugin",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "type": "module",
   "exports": {
     ".": {
