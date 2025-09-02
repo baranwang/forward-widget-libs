@@ -123,6 +123,10 @@ export const WidgetAdaptor = {
     remove: (key: string) => {
       return fs.rmSync(STORAGE_CONFIG.getFilePath(key));
     },
+    keys: () => {
+      const keys = fs.readdirSync(STORAGE_CONFIG.DIR);
+      return keys.map((key) => decodeURIComponent(key));
+    },
     clear: () => {
       return fs.rmSync(STORAGE_CONFIG.DIR, { recursive: true });
     },
