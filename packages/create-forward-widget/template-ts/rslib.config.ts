@@ -15,5 +15,20 @@ export default defineConfig({
       autoExternal: false,
     },
   ],
+  output: {
+    target: 'web',
+    minify: {
+      jsOptions: {
+        minimizerOptions: {
+          mangle: true,
+          minify: false,
+          compress: true,
+          format: {
+            comments: false,
+          },
+        },
+      },
+    },
+  },
   plugins: [pluginForwardWidget()],
 });
