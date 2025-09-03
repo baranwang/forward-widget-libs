@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 1.8.4
+
+### Patch Changes
+
+- b7909a8: 在 CommentItem 接口中将 cid 属性改为可选，以提高灵活性
+
 ## 1.8.3
 
 ### Patch Changes
