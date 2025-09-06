@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.9.0
+
+### Minor Changes
+
+- 1be415e: 在处理构建后的逻辑中添加空格以统一 WidgetMetadata 的格式
+
 ## 1.8.5
 
 ### Patch Changes
