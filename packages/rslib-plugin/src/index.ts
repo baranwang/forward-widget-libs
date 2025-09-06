@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
 import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from '@rsbuild/core';
-import { Project, type SourceFile, SyntaxKind } from 'ts-morph';
+import { Node, Project, type SourceFile, SyntaxKind } from 'ts-morph';
 import { generateDanmuModuleInterfaces } from './generators/danmu';
 import { generateVideoModuleInterface } from './generators/video';
 import { generateParamType } from './utils';
@@ -132,6 +132,52 @@ async function clearExportDeclaration(distPath: string): Promise<void> {
   }
 }
 
+// WidgetMetadata = {} 加空格
+async function addSpaceToWidgetMetadata(distPath: string): Promise<void> {
+  if (!fs.existsSync(distPath)) {
+    return;
+  }
+
+  const project = new Project();
+  const sourceFile = project.addSourceFileAtPath(distPath);
+  const insertions: { pos: number; text: string }[] = [];
+
+  const fullText = sourceFile.getFullText();
+
+  for (const be of sourceFile.getDescendantsOfKind(SyntaxKind.BinaryExpression)) {
+    // 必须是等号
+    if (be.getOperatorToken().getKind() !== SyntaxKind.EqualsToken) continue;
+
+    // 左侧必须是 Identifier 且为 WidgetMetadata
+    const left = be.getLeft();
+    if (!Node.isIdentifier(left) || left.getText() !== 'WidgetMetadata') continue;
+
+    const eq = be.getOperatorToken();
+    const start = eq.getStart();
+    const end = eq.getEnd();
+
+    const beforeCh = start > 0 ? fullText[start - 1] : '';
+    const afterCh = end < fullText.length ? fullText[end] : '';
+
+    // 无空格/制表符则补一个空格
+    if (beforeCh !== ' ' && beforeCh !== '\t') {
+      insertions.push({ pos: start, text: ' ' });
+    }
+    if (afterCh !== ' ' && afterCh !== '\t') {
+      insertions.push({ pos: end, text: ' ' });
+    }
+  }
+
+  // 统一从右往左插入，避免偏移
+  insertions
+    .sort((a, b) => b.pos - a.pos)
+    .forEach(({ pos, text }) => {
+      sourceFile.insertText(pos, text);
+    });
+
+  await sourceFile.save();
+}
+
 // 构建处理工具
 /**
  * 处理构建后的逻辑
@@ -156,6 +202,7 @@ async function processAfterBuild(
   await Promise.all(
     outputFiles.map(async (outputFile) => {
       await clearExportDeclaration(outputFile);
+      await addSpaceToWidgetMetadata(outputFile);
       await generateWidgetTypes(outputFile);
     }),
   );
@@ -201,14 +248,6 @@ export const pluginForwardWidget = ({
     api.transform({ test: '/\.ts$/' }, ({ code, addDependency }) => {
       addDependency(dtsPath);
       return code;
-    });
-
-    api.modifyRsbuildConfig((userConfig, { mergeRsbuildConfig }) => {
-      return mergeRsbuildConfig(userConfig, {
-        output: {
-          target: 'web',
-        },
-      });
     });
 
     api.onAfterBuild(async ({ stats, isWatch, isFirstCompile }) => {
