@@ -1,5 +1,11 @@
 # @forward-widget/rslib-plugin
 
+## 1.8.5
+
+### Patch Changes
+
+- aa9a68b: 修复参数 ID 包含点时生成的类型错误问题
+
 ## 1.8.4
 
 ## 1.8.3
