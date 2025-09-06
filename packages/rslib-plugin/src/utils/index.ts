@@ -45,7 +45,7 @@ export function generateParamType(param: WidgetModuleParam): OptionalKind<Proper
   }
 
   return {
-    name: param.name,
+    name: param.name.includes('.') ? `'${param.name}'` : param.name,
     type,
     docs: [
       {
