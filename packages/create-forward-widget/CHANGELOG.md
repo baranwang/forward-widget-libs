@@ -1,5 +1,7 @@
 # create-forward-widget
 
+## 2.0.0
+
 ## 1.9.0
 
 ## 1.8.5
