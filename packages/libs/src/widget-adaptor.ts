@@ -107,28 +107,31 @@ export const WidgetAdaptor = {
     },
   },
   html: {
-    load: load as typeof import('cheerio').load,
+    load: ((...args: Parameters<typeof import('cheerio').load>) =>
+      new Promise((resolve) => resolve(load(...args)))) as (
+      ...args: Parameters<typeof import('cheerio').load>
+    ) => Promise<ReturnType<typeof import('cheerio').load>>,
   },
   storage: {
-    get: (key: string) => {
+    get: async (key: string) => {
       const filePath = STORAGE_CONFIG.getFilePath(key);
       if (!fs.existsSync(filePath)) {
         return null;
       }
-      return fs.readFileSync(filePath, 'utf-8');
+      return fs.promises.readFile(filePath, 'utf-8');
     },
     set: (key: string, value: string) => {
-      return fs.writeFileSync(STORAGE_CONFIG.getFilePath(key), value, 'utf-8');
+      return fs.promises.writeFile(STORAGE_CONFIG.getFilePath(key), value, 'utf-8');
     },
     remove: (key: string) => {
-      return fs.rmSync(STORAGE_CONFIG.getFilePath(key));
+      return fs.promises.rm(STORAGE_CONFIG.getFilePath(key));
     },
-    keys: () => {
-      const keys = fs.readdirSync(STORAGE_CONFIG.DIR);
+    keys: async () => {
+      const keys = await fs.promises.readdir(STORAGE_CONFIG.DIR);
       return keys.map((key) => decodeURIComponent(key));
     },
     clear: () => {
-      return fs.rmSync(STORAGE_CONFIG.DIR, { recursive: true });
+      return fs.promises.rm(STORAGE_CONFIG.DIR, { recursive: true });
     },
   },
 };
