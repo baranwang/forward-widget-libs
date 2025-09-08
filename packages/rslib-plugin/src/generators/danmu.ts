@@ -21,7 +21,7 @@ function getReturnTypeExtends(moduleId: string): WriterFunction | undefined {
 /**
  * 生成弹幕模块接口
  */
-export function generateDanmuModuleInterfaces(sourceFile: SourceFile, module: WidgetModule) {
+export function generateDanmuModuleInterfaces(nameSpaceName: string, sourceFile: SourceFile, module: WidgetModule) {
   if (module.type !== 'danmu') {
     return;
   }
@@ -38,7 +38,7 @@ export function generateDanmuModuleInterfaces(sourceFile: SourceFile, module: Wi
       },
     ],
     extends: (writer) => {
-      writer.write('GlobalParams, BaseDanmuParams');
+      writer.write(`${nameSpaceName}.GlobalParams, BaseDanmuParams`);
       if (id === 'getDetail') {
         writer.write(', AnimeItem');
       }

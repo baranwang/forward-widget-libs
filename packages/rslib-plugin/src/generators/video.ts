@@ -5,7 +5,7 @@ import { generateModuleFunctionType, generateParamType, generateTypeName } from 
 /**
  * 生成 Video 模块接口
  */
-export function generateVideoModuleInterface(sourceFile: SourceFile, module: WidgetModule) {
+export function generateVideoModuleInterface(nameSpaceName: string, sourceFile: SourceFile, module: WidgetModule) {
   const { paramsTypeName, returnTypeName } = generateTypeName(module);
 
   sourceFile.addInterface({
@@ -16,7 +16,7 @@ export function generateVideoModuleInterface(sourceFile: SourceFile, module: Wid
         description: `Params of ${module.title}`,
       },
     ],
-    extends: ['GlobalParams'],
+    extends: [`${nameSpaceName}.GlobalParams`],
     properties: module.params?.map(generateParamType),
   });
 

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
 import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from '@rsbuild/core';
+import { camelCase, upperFirst } from 'es-toolkit';
 import { Node, Project, type SourceFile, SyntaxKind } from 'ts-morph';
 import { generateDanmuModuleInterfaces } from './generators/danmu';
 import { generateVideoModuleInterface } from './generators/video';
@@ -73,20 +74,23 @@ function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceF
       if (!widgetMetadataObject) {
         return;
       }
-
-      sourceFile.addInterface({
+      const nameSpaceName = upperFirst(camelCase(widgetMetadataObject.id));
+      const nameSpace = sourceFile.addModule({
+        name: nameSpaceName,
+      });
+      nameSpace.addInterface({
         name: 'GlobalParams',
         properties: widgetMetadataObject.globalParams?.map(generateParamType) || [],
       });
 
-      generateModuleInterfaces(sourceFile, widgetMetadataObject.modules);
+      generateModuleInterfaces(nameSpaceName, sourceFile, widgetMetadataObject.modules);
     } catch (error) {
       api.logger.error(`生成函数类型失败: ${entry}`, error);
     }
   };
 }
 
-function generateModuleInterfaces(sourceFile: SourceFile, modules: WidgetModule[]): void {
+function generateModuleInterfaces(nameSpaceName: string, sourceFile: SourceFile, modules: WidgetModule[]): void {
   for (const module of modules) {
     const { id, type: moduleType } = module;
 
@@ -94,10 +98,10 @@ function generateModuleInterfaces(sourceFile: SourceFile, modules: WidgetModule[
     sourceFile.addStatements(`\n//#region ${id}`);
 
     if (moduleType === 'danmu') {
-      generateDanmuModuleInterfaces(sourceFile, module);
+      generateDanmuModuleInterfaces(nameSpaceName, sourceFile, module);
     } else {
       // 没有 type 或 type 不是 'danmu' 的都是 video 类型
-      generateVideoModuleInterface(sourceFile, module);
+      generateVideoModuleInterface(nameSpaceName, sourceFile, module);
     }
 
     sourceFile.addStatements(`//#endregion ${id}`);
