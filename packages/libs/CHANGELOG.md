@@ -1,5 +1,11 @@
 # @forward-widget/libs
 
+## 2.0.0
+
+### Major Changes
+
+- 25651b6: 更新 WidgetAdaptor 类型，对齐 Widget
+
 ## 1.9.0
 
 ## 1.8.5
