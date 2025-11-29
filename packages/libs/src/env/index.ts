@@ -1,4 +1,7 @@
-import './metadata';
-import './video';
-import './danmu';
-import './widget';
+import "./common";
+import "./danmu";
+import "./metadata";
+import "./stream";
+import "./subtitle";
+import "./video";
+import "./widget";

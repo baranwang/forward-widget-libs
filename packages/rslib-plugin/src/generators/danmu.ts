@@ -1,18 +1,18 @@
-import type { SourceFile, WriterFunction } from 'ts-morph';
-import { StructureKind } from 'ts-morph';
-import { generateModuleFunctionType, generateTypeName } from '../utils';
+import type { SourceFile, WriterFunction } from "ts-morph";
+import { StructureKind } from "ts-morph";
+import { generateModuleFunctionType, generateTypeName } from "../utils";
 
 /**
  * 获取弹幕模块的返回类型扩展
  */
 function getReturnTypeExtends(moduleId: string): WriterFunction | undefined {
   switch (moduleId) {
-    case 'getDetail':
-      return (writer) => writer.write('Array<GetDetailResponseItem>');
-    case 'getComments':
-      return (writer) => writer.write('GetCommentsResponse');
-    case 'getDanmuWithSegmentTime':
-      return (writer) => writer.write('GetDanmuWithSegmentTimeResponse');
+    case "getDetail":
+      return (writer) => writer.write("Array<GetDetailResponseItem>");
+    case "getComments":
+      return (writer) => writer.write("GetCommentsResponse");
+    case "getDanmuWithSegmentTime":
+      return (writer) => writer.write("GetDanmuWithSegmentTimeResponse");
     default:
       return undefined;
   }
@@ -22,7 +22,7 @@ function getReturnTypeExtends(moduleId: string): WriterFunction | undefined {
  * 生成弹幕模块接口
  */
 export function generateDanmuModuleInterfaces(nameSpaceName: string, sourceFile: SourceFile, module: WidgetModule) {
-  if (module.type !== 'danmu') {
+  if (module.type !== "danmu") {
     return;
   }
 
@@ -38,15 +38,15 @@ export function generateDanmuModuleInterfaces(nameSpaceName: string, sourceFile:
       },
     ],
     extends: (writer) => {
-      writer.write(`${nameSpaceName}.GlobalParams, BaseDanmuParams`);
-      if (id === 'getDetail') {
-        writer.write(', AnimeItem');
+      writer.write(`${nameSpaceName}.GlobalParams, BaseParams`);
+      if (id === "getDetail") {
+        writer.write(", AnimeItem");
       }
-      if (id === 'getComments') {
-        writer.write(', EpisodeItem');
+      if (id === "getComments") {
+        writer.write(", EpisodeItem");
       }
-      if (id === 'getDanmuWithSegmentTime') {
-        writer.write(', GetDanmuWithSegmentTimeParams');
+      if (id === "getDanmuWithSegmentTime") {
+        writer.write(", GetDanmuWithSegmentTimeParams");
       }
     },
   });
@@ -56,11 +56,11 @@ export function generateDanmuModuleInterfaces(nameSpaceName: string, sourceFile:
     name: returnTypeName,
     extends: getReturnTypeExtends(id),
     properties:
-      id === 'searchDanmu'
+      id === "searchDanmu"
         ? [
             {
-              name: 'animes',
-              type: 'Array<AnimeItem>',
+              name: "animes",
+              type: "Array<AnimeItem>",
             },
           ]
         : [],

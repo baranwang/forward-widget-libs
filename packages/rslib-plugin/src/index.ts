@@ -1,12 +1,14 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { widgetMetadataSchema } from '@forward-widget/libs/env.zod';
-import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from '@rsbuild/core';
-import { camelCase, upperFirst } from 'es-toolkit';
-import { Node, Project, type SourceFile, SyntaxKind } from 'ts-morph';
-import { generateDanmuModuleInterfaces } from './generators/danmu';
-import { generateVideoModuleInterface } from './generators/video';
-import { generateParamType } from './utils';
+import fs from "node:fs";
+import path from "node:path";
+import { widgetMetadataSchema } from "@forward-widget/libs/env.zod";
+import type { RsbuildPlugin, RsbuildPluginAPI, Rspack } from "@rsbuild/core";
+import { camelCase, upperFirst } from "es-toolkit";
+import { Node, Project, type SourceFile, SyntaxKind } from "ts-morph";
+import { generateDanmuModuleInterfaces } from "./generators/danmu";
+import { generateStreamModuleInterface } from "./generators/stream";
+import { generateSubtitleModuleInterface } from "./generators/subtitle";
+import { generateVideoModuleInterface } from "./generators/video";
+import { generateParamType } from "./utils";
 
 // 类型定义
 interface ForwardWidgetPluginOptions {
@@ -33,7 +35,7 @@ function safeParseWidgetMetadataFactory(api: RsbuildPluginAPI) {
       // 创建安全的执行环境
       const sandbox = { WidgetMetadata: null as WidgetMetadata | null };
       const func = new Function(
-        'sandbox',
+        "sandbox",
         `
         let WidgetMetadata;
         ${content};
@@ -48,12 +50,12 @@ function safeParseWidgetMetadataFactory(api: RsbuildPluginAPI) {
       }
       const { data, success, error } = widgetMetadataSchema.safeParse(sandbox.WidgetMetadata);
       if (!success) {
-        api.logger.error('解析 WidgetMetadata 失败，跳过类型生成', error);
+        api.logger.error("解析 WidgetMetadata 失败，跳过类型生成", error);
         return null;
       }
       return data;
     } catch (error) {
-      api.logger.error('解析 WidgetMetadata 失败，跳过类型生成', error);
+      api.logger.error("解析 WidgetMetadata 失败，跳过类型生成", error);
       return null;
     }
   };
@@ -68,7 +70,7 @@ function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceF
 
   return async (entry: string): Promise<void> => {
     try {
-      const content = await fs.promises.readFile(entry, 'utf-8');
+      const content = await fs.promises.readFile(entry, "utf-8");
       const widgetMetadataObject = safeParseWidgetMetadata(content);
 
       if (!widgetMetadataObject) {
@@ -79,7 +81,7 @@ function generateFunctionTypesFactory(api: RsbuildPluginAPI, sourceFile: SourceF
         name: nameSpaceName,
       });
       nameSpace.addInterface({
-        name: 'GlobalParams',
+        name: "GlobalParams",
         properties: widgetMetadataObject.globalParams?.map(generateParamType) || [],
       });
 
@@ -97,11 +99,20 @@ function generateModuleInterfaces(nameSpaceName: string, sourceFile: SourceFile,
     // 添加区域注释
     sourceFile.addStatements(`\n//#region ${id}`);
 
-    if (moduleType === 'danmu') {
-      generateDanmuModuleInterfaces(nameSpaceName, sourceFile, module);
-    } else {
-      // 没有 type 或 type 不是 'danmu' 的都是 video 类型
-      generateVideoModuleInterface(nameSpaceName, sourceFile, module);
+    switch (moduleType) {
+      case "danmu":
+        generateDanmuModuleInterfaces(nameSpaceName, sourceFile, module);
+        break;
+      case "stream":
+        generateStreamModuleInterface(nameSpaceName, sourceFile, module);
+        break;
+      case "subtitle":
+        generateSubtitleModuleInterface(nameSpaceName, sourceFile, module);
+        break;
+      default:
+        // 没有 type 或 type 不是 'danmu' 的都是 video 类型
+        generateVideoModuleInterface(nameSpaceName, sourceFile, module);
+        break;
     }
 
     sourceFile.addStatements(`//#endregion ${id}`);
@@ -126,7 +137,9 @@ async function clearExportDeclaration(distPath: string): Promise<void> {
       .getStatements()
       .filter((statement) => statement.getKind() === SyntaxKind.ExportDeclaration);
 
-    exportStatements.forEach((statement) => statement.remove());
+    exportStatements.forEach((statement) => {
+      statement.remove();
+    });
 
     if (exportStatements.length > 0) {
       await sourceFile.save();
@@ -154,21 +167,21 @@ async function addSpaceToWidgetMetadata(distPath: string): Promise<void> {
 
     // 左侧必须是 Identifier 且为 WidgetMetadata
     const left = be.getLeft();
-    if (!Node.isIdentifier(left) || left.getText() !== 'WidgetMetadata') continue;
+    if (!Node.isIdentifier(left) || left.getText() !== "WidgetMetadata") continue;
 
     const eq = be.getOperatorToken();
     const start = eq.getStart();
     const end = eq.getEnd();
 
-    const beforeCh = start > 0 ? fullText[start - 1] : '';
-    const afterCh = end < fullText.length ? fullText[end] : '';
+    const beforeCh = start > 0 ? fullText[start - 1] : "";
+    const afterCh = end < fullText.length ? fullText[end] : "";
 
     // 无空格/制表符则补一个空格
-    if (beforeCh !== ' ' && beforeCh !== '\t') {
-      insertions.push({ pos: start, text: ' ' });
+    if (beforeCh !== " " && beforeCh !== "\t") {
+      insertions.push({ pos: start, text: " " });
     }
-    if (afterCh !== ' ' && afterCh !== '\t') {
-      insertions.push({ pos: end, text: ' ' });
+    if (afterCh !== " " && afterCh !== "\t") {
+      insertions.push({ pos: end, text: " " });
     }
   }
 
@@ -194,7 +207,7 @@ async function processAfterBuild(
   const outputFiles = getOutputFiles(api, stats);
 
   if (!outputFiles.length) {
-    api.logger.warn('未找到输出文件，跳过类型生成');
+    api.logger.warn("未找到输出文件，跳过类型生成");
     return;
   }
 
@@ -230,7 +243,7 @@ async function setupTypeDefinitionFile(dtsPath: string): Promise<SourceFile> {
     typeDefFile = dtsProject.addSourceFileAtPath(dtsPath);
     typeDefFile.removeStatements([0, typeDefFile.getStatementsWithComments().length]);
   } else {
-    typeDefFile = dtsProject.createSourceFile(dtsPath, '');
+    typeDefFile = dtsProject.createSourceFile(dtsPath, "");
   }
 
   typeDefFile.insertText(0, `/// <reference types='@forward-widget/libs/env' />\n\n`);
@@ -240,16 +253,16 @@ async function setupTypeDefinitionFile(dtsPath: string): Promise<SourceFile> {
 
 // 主插件导出
 export const pluginForwardWidget = ({
-  typesFilePath = 'src/forward-widget-env.d.ts',
+  typesFilePath = "src/forward-widget-env.d.ts",
   devPort = 8000,
 }: ForwardWidgetPluginOptions = {}): RsbuildPlugin => ({
-  name: 'plugin-forward-widget',
+  name: "plugin-forward-widget",
 
   setup(api) {
     const dtsPath = path.resolve(api.context.rootPath, typesFilePath);
 
     // 添加类型文件依赖
-    api.transform({ test: '/\.ts$/' }, ({ code, addDependency }) => {
+    api.transform({ test: "/.ts$/" }, ({ code, addDependency }) => {
       addDependency(dtsPath);
       return code;
     });
@@ -258,12 +271,12 @@ export const pluginForwardWidget = ({
       try {
         await processAfterBuild(api, stats, dtsPath);
       } catch (error) {
-        api.logger.error('Forward Widget 插件处理失败', error);
+        api.logger.error("Forward Widget 插件处理失败", error);
       }
 
       try {
         if (isWatch && isFirstCompile) {
-          const { createDevServer } = await import('./dev-server');
+          const { createDevServer } = await import("./dev-server");
 
           await createDevServer({
             api,
@@ -271,7 +284,7 @@ export const pluginForwardWidget = ({
           });
         }
       } catch (error) {
-        api.logger.error('Forward Widget 插件开发服务器启动失败', error);
+        api.logger.error("Forward Widget 插件开发服务器启动失败", error);
       }
     });
   },

@@ -41,7 +41,7 @@ interface BaseWidgetModule {
   /** 模块唯一标识符 */
   id: string;
   /** 模块类型 */
-  type?: 'danmu';
+  type?: "danmu" | "stream" | "subtitle";
   /** 模块标题 */
   title: string;
   /** 模块描述 */
@@ -66,13 +66,23 @@ interface WidgetModuleVideo extends BaseWidgetModule {
 }
 
 interface WidgetModuleDanmu extends BaseWidgetModule {
-  type: 'danmu';
-  id: 'searchDanmu' | 'getDetail' | 'getComments' | 'getDanmuWithSegmentTime';
+  type: "danmu";
+  id: "searchDanmu" | "getDetail" | "getComments" | "getDanmuWithSegmentTime";
 }
 
-type WidgetModule = WidgetModuleVideo | WidgetModuleDanmu;
+interface WidgetModuleStream extends BaseWidgetModule {
+  type: "stream";
+  id: "loadResource";
+}
 
-type WidgetModuleParamType = 'input' | 'constant' | 'enumeration' | 'count' | 'page' | 'offset' | 'language';
+interface WidgetModuleSubtitle extends BaseWidgetModule {
+  type: "subtitle";
+  id: "loadSubtitle";
+}
+
+type WidgetModule = WidgetModuleVideo | WidgetModuleDanmu | WidgetModuleStream | WidgetModuleSubtitle;
+
+type WidgetModuleParamType = "input" | "constant" | "enumeration" | "count" | "page" | "offset" | "language";
 
 interface WidgetModuleParam {
   /** 参数名 */
