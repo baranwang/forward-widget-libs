@@ -16,7 +16,7 @@
   },
   "pnpm": {
     "overrides": {
-      "zod": "4.0.2"
+      "zod": "4.1.13"
     }
   },
   "packageManager": "pnpm@10.9.0"
